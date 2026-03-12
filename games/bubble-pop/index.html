@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>泡泡消消乐 - Bubble Match</title>
+    <title>泡泡消消乐 Pro - Bubble Match</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
@@ -72,7 +72,7 @@
         }
         
         .game-logo {
-            font-size: 48px;
+            font-size: 56px;
             font-weight: 900;
             background: linear-gradient(135deg, #667eea 0%, #ffd700 50%, #ff6b6b 100%);
             -webkit-background-clip: text;
@@ -83,33 +83,51 @@
         }
         
         .game-subtitle {
-            font-size: 16px;
+            font-size: 18px;
             color: rgba(255,255,255,0.6);
-            letter-spacing: 8px;
-            margin-bottom: 60px;
+            letter-spacing: 10px;
+            margin-bottom: 50px;
         }
         
-        .start-btn {
-            padding: 20px 60px;
-            font-size: 24px;
-            font-weight: 700;
-            border: none;
-            border-radius: 50px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #fff;
+        .mode-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            padding: 0 30px;
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .mode-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 25px 15px;
+            text-align: center;
             cursor: pointer;
-            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.5);
-            animation: pulse 2s ease-in-out infinite;
             transition: all 0.3s;
         }
         
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 10px 40px rgba(102, 126, 234, 0.5); }
-            50% { transform: scale(1.05); box-shadow: 0 15px 50px rgba(102, 126, 234, 0.7); }
+        .mode-card:hover, .mode-card:active {
+            transform: scale(1.05);
+            border-color: #ffd700;
+            box-shadow: 0 10px 40px rgba(255, 215, 0, 0.3);
         }
         
-        .start-btn:hover {
-            transform: scale(1.1);
+        .mode-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        .mode-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .mode-desc {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
         }
         
         .version-text {
@@ -119,100 +137,95 @@
             color: rgba(255,255,255,0.3);
         }
         
-        /* ========== 菜单页 ========== */
-        .menu-page {
+        /* ========== 排行榜页 ========== */
+        .rank-page {
             padding: 20px;
+            overflow-y: auto;
         }
         
-        .menu-header {
+        .rank-header {
             text-align: center;
             padding: 20px 0;
         }
         
-        .menu-title {
+        .rank-title {
             font-size: 32px;
             font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #ffd700 100%);
+            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         
-        .level-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            padding: 20px;
+        .rank-tabs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .rank-tab {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .rank-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .rank-list {
             max-width: 400px;
             margin: 0 auto;
         }
         
-        .level-card {
-            aspect-ratio: 1;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
-            border: 2px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
+        .rank-item {
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .rank-number {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-        }
-        
-        .level-card:hover, .level-card:active {
-            transform: scale(1.05);
-            border-color: rgba(102, 126, 234, 0.5);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-        }
-        
-        .level-card.locked {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .level-card.locked::after {
-            content: '🔒';
-            font-size: 24px;
-            position: absolute;
-        }
-        
-        .level-number {
-            font-size: 28px;
             font-weight: 700;
-            color: #fff;
         }
         
-        .level-stars {
-            font-size: 14px;
-            margin-top: 5px;
+        .rank-number.top3 {
+            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
         }
         
-        .level-stars.gold {
+        .rank-info {
+            flex: 1;
+        }
+        
+        .rank-name {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .rank-detail {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .rank-score {
+            font-size: 20px;
+            font-weight: 700;
             color: #ffd700;
-        }
-        
-        .menu-footer {
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-        
-        .menu-btn {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 25px;
-            font-size: 14px;
-            cursor: pointer;
-            background: rgba(255,255,255,0.1);
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: all 0.3s;
-        }
-        
-        .menu-btn:hover {
-            background: rgba(255,255,255,0.2);
         }
         
         /* ========== 游戏页 ========== */
@@ -229,18 +242,6 @@
             backdrop-filter: blur(10px);
         }
         
-        .level-info { color: #fff; }
-        .level-num { font-size: 24px; font-weight: 700; }
-        .level-label { font-size: 12px; color: rgba(255,255,255,0.6); }
-        
-        .score-board { text-align: center; color: #ffd700; }
-        .score-value { font-size: 28px; font-weight: 700; text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-        .score-label { font-size: 11px; color: rgba(255,215,0,0.7); }
-        
-        .moves-left { text-align: right; color: #fff; }
-        .moves-value { font-size: 24px; font-weight: 700; color: #ff6b6b; }
-        .moves-label { font-size: 12px; color: rgba(255,255,255,0.6); }
-        
         .back-btn {
             padding: 8px 15px;
             background: rgba(255,255,255,0.1);
@@ -251,55 +252,94 @@
             font-size: 14px;
         }
         
-        .mission-bar {
+        .game-mode-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+        
+        .game-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+        }
+        
+        .stat-box {
+            text-align: center;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .stat-value.score { color: #ffd700; text-shadow: 0 0 10px rgba(255,215,0,0.5); }
+        .stat-value.time { color: #ff6b6b; }
+        .stat-value.combo { color: #4ecdc4; }
+        
+        /* 道具栏 */
+        .tools-bar {
             padding: 10px 20px;
-            background: rgba(255,255,255,0.05);
             display: flex;
             gap: 15px;
-            overflow-x: auto;
+            justify-content: center;
+            background: rgba(255,255,255,0.03);
         }
         
-        .mission-item {
+        .tool-btn {
+            width: 60px;
+            height: 60px;
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(135deg, rgba(102,126,234,0.3) 0%, rgba(118,75,162,0.3) 100%);
+            border: 2px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .tool-btn:hover, .tool-btn.active {
+            transform: scale(1.1);
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255,215,0,0.3);
+        }
+        
+        .tool-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .tool-icon {
+            font-size: 24px;
+        }
+        
+        .tool-count {
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            width: 22px;
+            height: 22px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 15px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 20px;
-            border: 2px solid transparent;
+            justify-content: center;
         }
         
-        .mission-item.completed {
-            border-color: #4caf50;
-            background: rgba(76, 175, 80, 0.2);
-        }
-        
-        .mission-bubble {
-            width: 24px; height: 24px;
-            border-radius: 50%;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        }
-        
-        .mission-text {
-            color: #fff;
-            font-size: 14px;
-            font-weight: 600;
-        }
-        
-        .mission-text span { color: #ffd700; }
-        
-        .progress-container { padding: 0 20px 10px; }
-        .progress-bar {
-            height: 6px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            border-radius: 3px;
-            transition: width 0.5s ease-out;
+        .tool-btn.locked::after {
+            content: '🔒';
+            position: absolute;
+            font-size: 20px;
         }
         
         .game-area {
@@ -349,6 +389,34 @@
             transform: rotate(-20deg);
         }
         
+        /* 特殊泡泡 */
+        .bubble.ice {
+            background: radial-gradient(circle at 30% 30%, #e0f7fa, #81d4fa);
+            border: 2px solid #4fc3f7;
+        }
+        
+        .bubble.ice::after {
+            content: '❄️';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+        }
+        
+        .bubble.rock {
+            background: radial-gradient(circle at 30% 30%, #bcaaa4, #5d4037);
+            border: 2px solid #3e2723;
+        }
+        
+        .bubble.rock::after {
+            content: '🪨';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+        }
+        
+        /* 普通颜色 */
         .bubble-red { background: radial-gradient(circle at 30% 30%, #ff8e8e, #ff6b6b); }
         .bubble-blue { background: radial-gradient(circle at 30% 30%, #7fdbda, #4ecdc4); }
         .bubble-green { background: radial-gradient(circle at 30% 30%, #b8f0e6, #95e1d3); }
@@ -396,7 +464,7 @@
         }
         
         .combo-text {
-            font-size: 64px;
+            font-size: 72px;
             font-weight: 900;
             background: linear-gradient(135deg, #ffd700 0%, #ff6b6b 100%);
             -webkit-background-clip: text;
@@ -427,44 +495,23 @@
             100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
         }
         
-        .game-footer {
-            padding: 15px 20px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-        
-        .game-btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 25px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .game-btn.primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #fff;
-        }
-        
-        .game-btn.secondary {
-            background: rgba(255,255,255,0.1);
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-        
-        /* ========== 结束页 ========== */
-        .end-page {
+        /* ========== 结算页 ========== */
+        .result-page {
             align-items: center;
             justify-content: center;
             background: radial-gradient(ellipse at center, #2d2d44 0%, #0a0a0f 70%);
             padding: 40px;
         }
         
-        .end-content {
+        .result-content {
             text-align: center;
             max-width: 400px;
+            animation: resultSlideUp 0.5s ease-out;
+        }
+        
+        @keyframes resultSlideUp {
+            0% { transform: translateY(50px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
         }
         
         .result-icon {
@@ -490,68 +537,58 @@
             -webkit-text-fill-color: transparent;
         }
         
-        .result-title.lose {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .result-score {
+            font-size: 64px;
+            font-weight: 900;
+            color: #ffd700;
+            margin: 20px 0;
+            text-shadow: 0 0 30px rgba(255,215,0,0.5);
         }
         
-        .result-subtitle {
-            font-size: 18px;
-            color: rgba(255,255,255,0.7);
-            margin-bottom: 40px;
-        }
-        
-        .stats-panel {
+        .result-stats {
             background: rgba(255,255,255,0.05);
             border-radius: 20px;
-            padding: 30px;
+            padding: 25px;
             margin-bottom: 30px;
             border: 1px solid rgba(255,255,255,0.1);
         }
         
-        .stat-row {
+        .result-stat-row {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
+            padding: 12px 0;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         
-        .stat-row:last-child { border-bottom: none; }
+        .result-stat-row:last-child { border-bottom: none; }
         
-        .stat-name {
-            font-size: 16px;
-            color: rgba(255,255,255,0.6);
-        }
+        .result-stat-name { font-size: 14px; color: rgba(255,255,255,0.6); }
+        .result-stat-value { font-size: 20px; font-weight: 700; }
         
-        .stat-value {
-            font-size: 24px;
+        .new-record {
+            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+            color: #000;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
             font-weight: 700;
-            color: #fff;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: recordPulse 1s ease-in-out infinite;
         }
         
-        .stat-value.gold { color: #ffd700; }
-        
-        .stars-display {
-            font-size: 48px;
-            margin: 20px 0;
-            animation: starPop 0.5s ease-out;
+        @keyframes recordPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
         
-        @keyframes starPop {
-            0% { transform: scale(0); }
-            80% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-        
-        .end-buttons {
+        .result-buttons {
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
         
-        .end-btn {
+        .result-btn {
             padding: 18px 40px;
             border: none;
             border-radius: 30px;
@@ -561,40 +598,19 @@
             transition: all 0.3s;
         }
         
-        .end-btn.primary {
+        .result-btn.primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #fff;
             box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
         }
         
-        .end-btn.secondary {
+        .result-btn.secondary {
             background: rgba(255,255,255,0.1);
             color: #fff;
             border: 2px solid rgba(255,255,255,0.2);
         }
         
-        .end-btn:hover {
-            transform: scale(1.05);
-        }
-        
-        /* 烟花效果 */
-        .firework {
-            position: fixed;
-            pointer-events: none;
-        }
-        
-        .firework-particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            animation: fireworkFly 1s ease-out forwards;
-        }
-        
-        @keyframes fireworkFly {
-            0% { transform: translate(0, 0); opacity: 1; }
-            100% { transform: translate(var(--tx), var(--ty)); opacity: 0; }
-        }
+        .result-btn:hover { transform: scale(1.05); }
     </style>
 </head>
 <body>
@@ -605,49 +621,93 @@
     <div class="page start-page active" id="startPage">
         <div class="logo-container">
             <div class="game-logo">🫧 泡泡消消乐</div>
-            <div class="game-subtitle">BUBBLE MATCH</div>
+            <div class="game-subtitle">PRO EDITION</div>
         </div>
-        <button class="start-btn" onclick="showMenu()">▶ 开始游戏</button>
         
-        <div class="version-text">Version 1.0</div>
+        <div class="mode-grid">
+            <div class="mode-card" onclick="startMode('classic')">
+                <div class="mode-icon">🎯</div>
+                <div class="mode-name">经典模式</div>
+                <div class="mode-desc">完成任务通关</div>
+            </div>
+            <div class="mode-card" onclick="startMode('time')">
+                <div class="mode-icon">⚡</div>
+                <div class="mode-name">限时挑战</div>
+                <div class="mode-desc">60秒极速消除</div>
+            </div>
+            <div class="mode-card" onclick="startMode('endless')">
+                <div class="mode-icon">♾️</div>
+                <div class="mode-name">无尽模式</div>
+                <div class="mode-desc">挑战最高分</div>
+            </div>
+            <div class="mode-card" onclick="showRank()">
+                <div class="mode-icon">🏆</div>
+                <div class="mode-name">排行榜</div>
+                <div class="mode-desc">查看最高分</div>
+            </div>
+        </div>
+        
+        <div class="version-text">Version 2.0 Pro</div>
     </div>
     
-    <!-- 菜单页 -->
-    <div class="page menu-page" id="menuPage">
-        <div class="menu-header">
-            <div class="menu-title">🎯 选择关卡</div>
+    <!-- 排行榜页 -->
+    <div class="page rank-page" id="rankPage">
+        <div class="rank-header">
+            <div class="rank-title">🏆 排行榜</div>
         </div>
         
-        <div class="level-grid" id="levelGrid"></div>
+        <div class="rank-tabs">
+            <button class="rank-tab active" onclick="switchRankTab('classic')">经典</button>
+            <button class="rank-tab" onclick="switchRankTab('time')">限时</button>
+            <button class="rank-tab" onclick="switchRankTab('endless')">无尽</button>
+        </div>
+        
+        <div class="rank-list" id="rankList"></div>
         
         <div class="menu-footer">
             <button class="menu-btn" onclick="showStart()">← 返回</button>
-            <button class="menu-btn" onclick="resetProgress()">🔄 重置进度</button>
         </div>
     </div>
     
     <!-- 游戏页 -->
     <div class="page game-page" id="gamePage">
         <div class="game-header">
-            <div class="level-info">
-                <button class="back-btn" onclick="showMenu()">← 菜单</button>
-            </div>
-            <div class="score-board">
-                <div class="score-label">得分</div>
-                <div class="score-value" id="score">0</div>
-            </div>
-            <div class="moves-left">
-                <div class="moves-label">剩余步数</div>
-                <div class="moves-value" id="moves">20</div>
+            <button class="back-btn" onclick="showStart()">← 退出</button>
+            <div class="game-mode-title" id="gameModeTitle">经典模式</div>
+            <div class="game-stats">
+                <div class="stat-box">
+                    <div class="stat-label">得分</div>
+                    <div class="stat-value score" id="scoreDisplay">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label" id="timeLabel">剩余步数</div>
+                    <div class="stat-value time" id="timeDisplay">20</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">连击</div>
+                    <div class="stat-value combo" id="comboDisplay">0</div>
+                </div>
             </div>
         </div>
         
-        <div class="mission-bar" id="missionBar"></div>
-        
-        <div class="progress-container">
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
-            </div>
+        <!-- 道具栏 -->
+        <div class="tools-bar" id="toolsBar">
+            <button class="tool-btn" id="toolBomb" onclick="useTool('bomb')" title="炸弹：消除3x3区域">
+                <span class="tool-icon">💣</span>
+                <span class="tool-count" id="countBomb">3</span>
+            </button>
+            <button class="tool-btn" id="toolHammer" onclick="useTool('hammer')" title="锤子：消除单个">
+                <span class="tool-icon">🔨</span>
+                <span class="tool-count" id="countHammer">3</span>
+            </button>
+            <button class="tool-btn" id="toolRainbow" onclick="useTool('rainbow')" title="彩虹球：消除同色">
+                <span class="tool-icon">🌈</span>
+                <span class="tool-count" id="countRainbow">2</span>
+            </button>
+            <button class="tool-btn" id="toolShuffle" onclick="useTool('shuffle')" title="刷新：重置棋盘">
+                <span class="tool-icon">🔄</span>
+                <span class="tool-count" id="countShuffle">2</span>
+            </button>
         </div>
         
         <div class="game-area">
@@ -659,230 +719,195 @@
         <div class="combo-display">
             <div class="combo-text" id="comboText"></div>
         </div>
-        
-        <div class="game-footer">
-            <button class="game-btn secondary" onclick="showHint()">💡 提示</button>
-            <button class="game-btn primary" onclick="restartLevel()">🔄 重开</button>
-        </div>
     </div>
     
-    <!-- 结束页 -->
-    <div class="page end-page" id="endPage">
-        <div class="end-content">
+    <!-- 结算页 -->
+    <div class="page result-page" id="resultPage">
+        <div class="result-content">
             <div class="result-icon" id="resultIcon">🎉</div>
-            <div class="result-title win" id="resultTitle">通关成功!</div>
-            <div class="result-subtitle" id="resultSubtitle">太棒了！完美完成所有任务</div>
+            <div class="result-title win" id="resultTitle">游戏结束</div>
             
-            <div class="stars-display" id="starsDisplay">⭐⭐⭐</div>
+            <div class="new-record" id="newRecordBadge" style="display:none;">🏆 新纪录!</div>
             
-            <div class="stats-panel">
-                <div class="stat-row">
-                    <span class="stat-name">关卡</span>
-                    <span class="stat-value" id="endLevel">1</span>
+            <div class="result-score" id="finalScore">0</div>
+            
+            <div class="result-stats">
+                <div class="result-stat-row">
+                    <span class="result-stat-name">最高连击</span>
+                    <span class="result-stat-value" id="finalMaxCombo">0</span>
                 </div>
-                <div class="stat-row">
-                    <span class="stat-name">最终得分</span>
-                    <span class="stat-value gold" id="endScore">0</span>
+                <div class="result-stat-row">
+                    <span class="result-stat-name">消除次数</span>
+                    <span class="result-stat-value" id="finalMatches">0</span>
                 </div>
-                <div class="stat-row">
-                    <span class="stat-name">剩余步数</span>
-                    <span class="stat-value" id="endMoves">5</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-name">最高连击</span>
-                    <span class="stat-value gold" id="endCombo">5</span>
+                <div class="result-stat-row">
+                    <span class="result-stat-name">使用道具</span>
+                    <span class="result-stat-value" id="finalTools">0</span>
                 </div>
             </div>
             
-            <div class="end-buttons">
-                <button class="end-btn primary" onclick="nextLevelFromEnd()">▶ 下一关</button>
-                <button class="end-btn secondary" onclick="showMenu()">📋 关卡菜单</button>
-                <button class="end-btn secondary" onclick="restartFromEnd()">🔄 重新挑战</button>
+            <div class="result-buttons">
+                <button class="result-btn primary" onclick="restartGame()">🔄 再玩一次</button>
+                <button class="result-btn secondary" onclick="showStart()">📋 主菜单</button>
             </div>
         </div>
     </div>
 
     <script>
-        // 游戏数据
+        // ==================== 游戏配置 ====================
         const COLORS = ['red', 'blue', 'green', 'yellow', 'purple'];
         const GRID_SIZE = 8;
         const CELL_COUNT = GRID_SIZE * GRID_SIZE;
-        const TOTAL_LEVELS = 15;
         
-        let grid = [];
-        let selectedCell = null;
-        let score = 0;
-        let moves = 20;
-        let currentLevel = 1;
-        let isProcessing = false;
-        let mission = {};
-        let missionProgress = {};
-        let maxCombo = 0;
-        let levelStars = {};
+        // 游戏状态
+        let gameState = {
+            mode: 'classic', // classic, time, endless
+            grid: [],
+            selectedCell: null,
+            score: 0,
+            moves: 0,
+            timeLeft: 0,
+            combo: 0,
+            maxCombo: 0,
+            matches: 0,
+            toolsUsed: 0,
+            isProcessing: false,
+            activeTool: null,
+            timerInterval: null,
+            tools: { bomb: 3, hammer: 3, rainbow: 2, shuffle: 2 }
+        };
         
-        // 关卡配置
-        const levels = [
-            { moves: 20, mission: { red: 10 }, targetScore: 1000 },
-            { moves: 25, mission: { red: 15, blue: 15 }, targetScore: 2000 },
-            { moves: 30, mission: { yellow: 20, green: 20 }, targetScore: 3000 },
-            { moves: 25, mission: { red: 15, blue: 15, green: 15 }, targetScore: 4000 },
-            { moves: 20, mission: { purple: 30 }, targetScore: 5000 },
-            { moves: 30, mission: { red: 20, blue: 20, yellow: 20 }, targetScore: 6000 },
-            { moves: 25, mission: { green: 25, purple: 25 }, targetScore: 7000 },
-            { moves: 35, mission: { red: 20, blue: 20, green: 20, yellow: 20 }, targetScore: 8000 },
-            { moves: 30, mission: { purple: 40 }, targetScore: 9000 },
-            { moves: 25, mission: { red: 25, blue: 25, green: 25, yellow: 25, purple: 25 }, targetScore: 10000 },
-            { moves: 20, mission: { red: 30 }, targetScore: 8000 },
-            { moves: 25, mission: { blue: 35 }, targetScore: 9000 },
-            { moves: 30, mission: { green: 40 }, targetScore: 10000 },
-            { moves: 35, mission: { yellow: 45 }, targetScore: 11000 },
-            { moves: 40, mission: { purple: 50 }, targetScore: 12000 }
-        ];
+        // 排行榜数据
+        let rankings = {
+            classic: [],
+            time: [],
+            endless: []
+        };
         
-        // 初始化
+        // ==================== 初始化 ====================
         function init() {
-            loadProgress();
+            loadRankings();
             createBgBubbles();
-            renderLevelGrid();
         }
         
-        // 创建背景泡泡
         function createBgBubbles() {
             const container = document.getElementById('bgAnimation');
             const colors = ['#667eea', '#764ba2', '#ffd700', '#ff6b6b'];
-            
             for (let i = 0; i < 15; i++) {
                 const bubble = document.createElement('div');
                 bubble.className = 'floating-bubble';
                 const size = 20 + Math.random() * 60;
-                bubble.style.cssText = `
-                    width: ${size}px;
-                    height: ${size}px;
-                    background: ${colors[Math.floor(Math.random() * colors.length)]};
-                    left: ${Math.random() * 100}%;
-                    top: ${Math.random() * 100}%;
-                    animation-delay: ${Math.random() * 5}s;
-                    animation-duration: ${6 + Math.random() * 4}s;
-                `;
+                bubble.style.cssText = `width:${size}px;height:${size}px;background:${colors[Math.floor(Math.random()*colors.length)]};left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${Math.random()*5}s;animation-duration:${6+Math.random()*4}s;`;
                 container.appendChild(bubble);
             }
         }
         
-        // 页面切换
+        // ==================== 页面切换 ====================
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
         }
         
-        function showStart() { showPage('startPage'); }
-        function showMenu() { 
-            renderLevelGrid();
-            showPage('menuPage'); 
+        function showStart() { 
+            clearInterval(gameState.timerInterval);
+            showPage('startPage'); 
         }
-        function showGame() { showPage('gamePage'); }
-        function showEnd() { showPage('endPage'); }
+        function showRank() { 
+            renderRankList('classic');
+            showPage('rankPage'); 
+        }
         
-        // 渲染关卡选择
-        function renderLevelGrid() {
-            const grid = document.getElementById('levelGrid');
-            grid.innerHTML = '';
+        // ==================== 模式选择 ====================
+        function startMode(mode) {
+            gameState.mode = mode;
+            gameState.score = 0;
+            gameState.combo = 0;
+            gameState.maxCombo = 0;
+            gameState.matches = 0;
+            gameState.toolsUsed = 0;
+            gameState.activeTool = null;
+            gameState.tools = { bomb: 3, hammer: 3, rainbow: 2, shuffle: 2 };
             
-            for (let i = 1; i <= TOTAL_LEVELS; i++) {
-                const card = document.createElement('div');
-                const stars = levelStars[i] || 0;
-                const locked = i > 1 && !levelStars[i - 1];
-                
-                card.className = `level-card ${locked ? 'locked' : ''}`;
-                card.innerHTML = `
-                    <div class="level-number">${i}</div>
-                    <div class="level-stars ${stars > 0 ? 'gold' : ''}">${stars > 0 ? '⭐'.repeat(stars) : '☆☆☆'}</div>
-                `;
-                
-                if (!locked) {
-                    card.onclick = () => startLevel(i);
-                }
-                
-                grid.appendChild(card);
+            // 设置模式参数
+            if (mode === 'classic') {
+                gameState.moves = 30;
+                gameState.timeLeft = 0;
+                document.getElementById('timeLabel').textContent = '剩余步数';
+                document.getElementById('timeDisplay').textContent = '30';
+            } else if (mode === 'time') {
+                gameState.moves = 9999;
+                gameState.timeLeft = 60;
+                document.getElementById('timeLabel').textContent = '剩余时间';
+                document.getElementById('timeDisplay').textContent = '60s';
+            } else if (mode === 'endless') {
+                gameState.moves = 50;
+                gameState.timeLeft = 0;
+                document.getElementById('timeLabel').textContent = '剩余步数';
+                document.getElementById('timeDisplay').textContent = '50';
             }
-        }
-        
-        // 开始关卡
-        function startLevel(level) {
-            currentLevel = level;
-            const config = levels[(level - 1) % levels.length];
-            moves = config.moves;
-            mission = { ...config.mission };
-            missionProgress = {};
-            Object.keys(mission).forEach(k => missionProgress[k] = 0);
-            score = 0;
-            maxCombo = 0;
-            selectedCell = null;
-            isProcessing = false;
             
+            const modeNames = { classic: '经典模式', time: '限时挑战', endless: '无尽模式' };
+            document.getElementById('gameModeTitle').textContent = modeNames[mode];
+            
+            updateToolsUI();
             updateUI();
-            renderMission();
             initGrid();
-            showGame();
+            showPage('gamePage');
+            
+            // 启动计时器（限时模式）
+            if (mode === 'time') {
+                gameState.timerInterval = setInterval(() => {
+                    gameState.timeLeft--;
+                    document.getElementById('timeDisplay').textContent = gameState.timeLeft + 's';
+                    if (gameState.timeLeft <= 0) {
+                        gameOver();
+                    }
+                }, 1000);
+            }
         }
         
-        // 初始化游戏网格
+        // ==================== 游戏核心 ====================
         function initGrid() {
-            grid = [];
+            gameState.grid = [];
             for (let i = 0; i < CELL_COUNT; i++) {
-                grid.push(createRandomBubble());
+                gameState.grid.push(createRandomBubble());
             }
-            
+            // 确保初始无匹配
             while (findMatches().length > 0) {
-                grid = [];
+                gameState.grid = [];
                 for (let i = 0; i < CELL_COUNT; i++) {
-                    grid.push(createRandomBubble());
+                    gameState.grid.push(createRandomBubble());
                 }
             }
-            
             renderGrid();
         }
         
         function createRandomBubble() {
-            return { color: COLORS[Math.floor(Math.random() * COLORS.length)] };
+            const rand = Math.random();
+            // 10%概率生成障碍物
+            if (rand < 0.05) return { type: 'ice', color: 'ice', hp: 2 };
+            if (rand < 0.1) return { type: 'rock', color: 'rock', hp: 1 };
+            return { type: 'normal', color: COLORS[Math.floor(Math.random() * COLORS.length)] };
         }
         
-        // 渲染任务
-        function renderMission() {
-            const bar = document.getElementById('missionBar');
-            bar.innerHTML = '';
-            
-            Object.entries(mission).forEach(([color, target]) => {
-                const current = missionProgress[color] || 0;
-                const completed = current >= target;
-                
-                const item = document.createElement('div');
-                item.className = `mission-item ${completed ? 'completed' : ''}`;
-                item.innerHTML = `
-                    <div class="mission-bubble bubble-${color}"></div>
-                    <div class="mission-text">${current}/<span>${target}</span></div>
-                `;
-                bar.appendChild(item);
-            });
-            
-            const totalTarget = Object.values(mission).reduce((a, b) => a + b, 0);
-            const totalCurrent = Object.values(missionProgress).reduce((a, b) => a + b, 0);
-            document.getElementById('progressFill').style.width = Math.min(100, (totalCurrent / totalTarget) * 100) + '%';
-        }
-        
-        // 渲染网格
         function renderGrid() {
             const gridEl = document.getElementById('grid');
             gridEl.innerHTML = '';
             
-            grid.forEach((cell, index) => {
+            gameState.grid.forEach((cell, index) => {
                 const cellEl = document.createElement('div');
                 cellEl.className = 'bubble-cell';
                 cellEl.dataset.index = index;
                 
                 if (cell) {
                     const bubble = document.createElement('div');
-                    bubble.className = `bubble bubble-${cell.color}`;
-                    if (index === selectedCell) bubble.classList.add('selected');
+                    let className = 'bubble';
+                    if (cell.type === 'ice') className += ' ice';
+                    else if (cell.type === 'rock') className += ' rock';
+                    else className += ` bubble-${cell.color}`;
+                    
+                    if (index === gameState.selectedCell) className += ' selected';
+                    bubble.className = className;
                     cellEl.appendChild(bubble);
                 }
                 
@@ -891,20 +916,26 @@
             });
         }
         
-        // 点击处理
         function onCellClick(index) {
-            if (isProcessing || !grid[index]) return;
+            if (gameState.isProcessing || !gameState.grid[index]) return;
             
-            if (selectedCell === null) {
-                selectedCell = index;
+            // 使用道具
+            if (gameState.activeTool) {
+                useToolOnCell(index);
+                return;
+            }
+            
+            // 正常交换
+            if (gameState.selectedCell === null) {
+                gameState.selectedCell = index;
                 renderGrid();
-            } else if (selectedCell === index) {
-                selectedCell = null;
+            } else if (gameState.selectedCell === index) {
+                gameState.selectedCell = null;
                 renderGrid();
-            } else if (isAdjacent(selectedCell, index)) {
-                trySwap(selectedCell, index);
+            } else if (isAdjacent(gameState.selectedCell, index)) {
+                trySwap(gameState.selectedCell, index);
             } else {
-                selectedCell = index;
+                gameState.selectedCell = index;
                 renderGrid();
             }
         }
@@ -915,26 +946,28 @@
             return Math.abs(ax - bx) + Math.abs(ay - by) === 1;
         }
         
-        // 交换逻辑
         async function trySwap(a, b) {
-            isProcessing = true;
-            selectedCell = null;
+            gameState.isProcessing = true;
+            gameState.selectedCell = null;
             
-            [grid[a], grid[b]] = [grid[b], grid[a]];
+            [gameState.grid[a], gameState.grid[b]] = [gameState.grid[b], gameState.grid[a]];
             renderGrid();
             
             const matches = findMatches();
             
             if (matches.length === 0) {
                 await sleep(200);
-                [grid[a], grid[b]] = [grid[b], grid[a]];
+                [gameState.grid[a], gameState.grid[b]] = [gameState.grid[b], gameState.grid[a]];
                 renderGrid();
-                isProcessing = false;
+                gameState.isProcessing = false;
             } else {
-                moves--;
-                updateUI();
+                // 扣除步数
+                if (gameState.mode !== 'time') {
+                    gameState.moves--;
+                    document.getElementById('timeDisplay').textContent = gameState.moves;
+                }
                 await processMatches();
-                if (moves <= 0) checkGameEnd();
+                checkGameEnd();
             }
         }
         
@@ -945,10 +978,12 @@
             for (let y = 0; y < GRID_SIZE; y++) {
                 for (let x = 0; x < GRID_SIZE - 2; x++) {
                     const idx = y * GRID_SIZE + x;
-                    if (!grid[idx] || !grid[idx + 1] || !grid[idx + 2]) continue;
-                    const c1 = grid[idx].color;
-                    if (grid[idx + 1].color === c1 && grid[idx + 2].color === c1) {
-                        matches.add(idx); matches.add(idx + 1); matches.add(idx + 2);
+                    if (!gameState.grid[idx] || !gameState.grid[idx+1] || !gameState.grid[idx+2]) continue;
+                    if (gameState.grid[idx].type !== 'normal' || gameState.grid[idx+1].type !== 'normal' || gameState.grid[idx+2].type !== 'normal') continue;
+                    
+                    const c1 = gameState.grid[idx].color;
+                    if (gameState.grid[idx+1].color === c1 && gameState.grid[idx+2].color === c1) {
+                        matches.add(idx); matches.add(idx+1); matches.add(idx+2);
                     }
                 }
             }
@@ -957,10 +992,12 @@
             for (let x = 0; x < GRID_SIZE; x++) {
                 for (let y = 0; y < GRID_SIZE - 2; y++) {
                     const idx = y * GRID_SIZE + x;
-                    if (!grid[idx] || !grid[idx + GRID_SIZE] || !grid[idx + GRID_SIZE * 2]) continue;
-                    const c1 = grid[idx].color;
-                    if (grid[idx + GRID_SIZE].color === c1 && grid[idx + GRID_SIZE * 2].color === c1) {
-                        matches.add(idx); matches.add(idx + GRID_SIZE); matches.add(idx + GRID_SIZE * 2);
+                    if (!gameState.grid[idx] || !gameState.grid[idx+GRID_SIZE] || !gameState.grid[idx+GRID_SIZE*2]) continue;
+                    if (gameState.grid[idx].type !== 'normal' || gameState.grid[idx+GRID_SIZE].type !== 'normal' || gameState.grid[idx+GRID_SIZE*2].type !== 'normal') continue;
+                    
+                    const c1 = gameState.grid[idx].color;
+                    if (gameState.grid[idx+GRID_SIZE].color === c1 && gameState.grid[idx+GRID_SIZE*2].color === c1) {
+                        matches.add(idx); matches.add(idx+GRID_SIZE); matches.add(idx+GRID_SIZE*2);
                     }
                 }
             }
@@ -968,29 +1005,21 @@
             return Array.from(matches);
         }
         
-        // 处理匹配
         async function processMatches() {
-            let combo = 0;
-            
             while (true) {
                 const matches = findMatches();
                 if (matches.length === 0) break;
                 
-                combo++;
-                if (combo > maxCombo) maxCombo = combo;
+                gameState.combo++;
+                if (gameState.combo > gameState.maxCombo) gameState.maxCombo = gameState.combo;
+                gameState.matches++;
                 
-                const points = matches.length * 10 * combo;
-                score += points;
+                const points = matches.length * 10 * gameState.combo;
+                gameState.score += points;
                 
-                matches.forEach(idx => {
-                    const color = grid[idx].color;
-                    if (mission[color] && missionProgress[color] < mission[color]) {
-                        missionProgress[color]++;
-                    }
-                });
+                if (gameState.combo > 1) showCombo(gameState.combo);
                 
-                if (combo > 1) showCombo(combo);
-                
+                // 消除动画
                 matches.forEach(idx => {
                     const cell = document.querySelector(`[data-index="${idx}"] .bubble`);
                     if (cell) {
@@ -1000,10 +1029,10 @@
                 });
                 
                 updateUI();
-                renderMission();
                 await sleep(300);
                 
-                matches.forEach(idx => grid[idx] = null);
+                // 清除并下落
+                matches.forEach(idx => gameState.grid[idx] = null);
                 applyGravity();
                 renderGrid();
                 
@@ -1011,8 +1040,8 @@
                 await sleep(200);
             }
             
-            isProcessing = false;
-            checkGameEnd();
+            gameState.combo = 0;
+            gameState.isProcessing = false;
         }
         
         function applyGravity() {
@@ -1020,22 +1049,203 @@
                 const column = [];
                 for (let y = GRID_SIZE - 1; y >= 0; y--) {
                     const idx = y * GRID_SIZE + x;
-                    if (grid[idx]) column.push(grid[idx]);
+                    if (gameState.grid[idx]) column.push(gameState.grid[idx]);
                 }
                 while (column.length < GRID_SIZE) column.push(createRandomBubble());
                 for (let y = GRID_SIZE - 1; y >= 0; y--) {
-                    grid[y * GRID_SIZE + x] = column[GRID_SIZE - 1 - y];
+                    gameState.grid[y * GRID_SIZE + x] = column[GRID_SIZE - 1 - y];
                 }
             }
         }
         
+        // ==================== 道具系统 ====================
+        function useTool(tool) {
+            if (gameState.tools[tool] <= 0 || gameState.isProcessing) return;
+            
+            gameState.activeTool = tool;
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tool${tool.charAt(0).toUpperCase() + tool.slice(1)}`).classList.add('active');
+        }
+        
+        function useToolOnCell(index) {
+            const tool = gameState.activeTool;
+            if (!tool || gameState.tools[tool] <= 0) return;
+            
+            gameState.tools[tool]--;
+            gameState.toolsUsed++;
+            updateToolsUI();
+            
+            let toRemove = [];
+            
+            if (tool === 'bomb') {
+                // 炸弹：消除3x3
+                const x = index % GRID_SIZE;
+                const y = Math.floor(index / GRID_SIZE);
+                for (let dy = -1; dy <= 1; dy++) {
+                    for (let dx = -1; dx <= 1; dx++) {
+                        const nx = x + dx, ny = y + dy;
+                        if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) {
+                            toRemove.push(ny * GRID_SIZE + nx);
+                        }
+                    }
+                }
+                gameState.score += toRemove.length * 20;
+            } else if (tool === 'hammer') {
+                // 锤子：消除单个
+                toRemove.push(index);
+                gameState.score += 10;
+            } else if (tool === 'rainbow') {
+                // 彩虹球：消除同色
+                const targetColor = gameState.grid[index]?.color;
+                if (targetColor) {
+                    gameState.grid.forEach((cell, idx) => {
+                        if (cell && cell.color === targetColor) toRemove.push(idx);
+                    });
+                    gameState.score += toRemove.length * 15;
+                }
+            } else if (tool === 'shuffle') {
+                // 刷新：重置棋盘
+                initGrid();
+                gameState.activeTool = null;
+                document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+                return;
+            }
+            
+            // 执行消除
+            if (toRemove.length > 0) {
+                toRemove.forEach(idx => {
+                    const cell = document.querySelector(`[data-index="${idx}"] .bubble`);
+                    if (cell) {
+                        cell.classList.add('removing');
+                        createParticles(idx);
+                    }
+                });
+                
+                setTimeout(() => {
+                    toRemove.forEach(idx => gameState.grid[idx] = null);
+                    applyGravity();
+                    renderGrid();
+                }, 300);
+            }
+            
+            gameState.activeTool = null;
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            updateUI();
+        }
+        
+        function updateToolsUI() {
+            document.getElementById('countBomb').textContent = gameState.tools.bomb;
+            document.getElementById('countHammer').textContent = gameState.tools.hammer;
+            document.getElementById('countRainbow').textContent = gameState.tools.rainbow;
+            document.getElementById('countShuffle').textContent = gameState.tools.shuffle;
+            
+            ['bomb', 'hammer', 'rainbow', 'shuffle'].forEach(tool => {
+                const btn = document.getElementById(`tool${tool.charAt(0).toUpperCase() + tool.slice(1)}`);
+                btn.disabled = gameState.tools[tool] <= 0;
+            });
+        }
+        
+        // ==================== 游戏结束 ====================
+        function checkGameEnd() {
+            if (gameState.mode === 'time') {
+                // 限时模式：时间到才结束
+                return;
+            }
+            
+            if (gameState.moves <= 0) {
+                // 检查是否还有可消除的
+                let hasMove = false;
+                for (let i = 0; i < CELL_COUNT; i++) {
+                    const neighbors = getNeighbors(i);
+                    for (let neighbor of neighbors) {
+                        [gameState.grid[i], gameState.grid[neighbor]] = [gameState.grid[neighbor], gameState.grid[i]];
+                        const matches = findMatches();
+                        [gameState.grid[i], gameState.grid[neighbor]] = [gameState.grid[neighbor], gameState.grid[i]];
+                        if (matches.length > 0) { hasMove = true; break; }
+                    }
+                    if (hasMove) break;
+                }
+                
+                if (!hasMove || gameState.mode === 'classic') {
+                    gameOver();
+                }
+            }
+        }
+        
+        function gameOver() {
+            clearInterval(gameState.timerInterval);
+            
+            // 保存排行榜
+            const record = {
+                score: gameState.score,
+                maxCombo: gameState.maxCombo,
+                matches: gameState.matches,
+                date: new Date().toLocaleDateString()
+            };
+            
+            rankings[gameState.mode].push(record);
+            rankings[gameState.mode].sort((a, b) => b.score - a.score);
+            rankings[gameState.mode] = rankings[gameState.mode].slice(0, 10);
+            saveRankings();
+            
+            // 显示结果
+            document.getElementById('finalScore').textContent = gameState.score.toLocaleString();
+            document.getElementById('finalMaxCombo').textContent = gameState.maxCombo;
+            document.getElementById('finalMatches').textContent = gameState.matches;
+            document.getElementById('finalTools').textContent = gameState.toolsUsed;
+            
+            // 检查是否新纪录
+            const isNewRecord = rankings[gameState.mode][0]?.score === gameState.score;
+            document.getElementById('newRecordBadge').style.display = isNewRecord ? 'inline-block' : 'none';
+            
+            showPage('resultPage');
+        }
+        
+        function restartGame() {
+            startMode(gameState.mode);
+        }
+        
+        // ==================== 排行榜 ====================
+        function switchRankTab(mode) {
+            document.querySelectorAll('.rank-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            renderRankList(mode);
+        }
+        
+        function renderRankList(mode) {
+            const list = document.getElementById('rankList');
+            list.innerHTML = '';
+            
+            const data = rankings[mode] || [];
+            if (data.length === 0) {
+                list.innerHTML = '<div style="text-align:center;padding:40px;color:rgba(255,255,255,0.5);">暂无记录</div>';
+                return;
+            }
+            
+            data.forEach((record, i) => {
+                const item = document.createElement('div');
+                item.className = 'rank-item';
+                item.innerHTML = `
+                    <div class="rank-number ${i < 3 ? 'top3' : ''}">${i + 1}</div>
+                    <div class="rank-info">
+                        <div class="rank-name">${record.date}</div>
+                        <div class="rank-detail">连击${record.maxCombo} · 消除${record.matches}次</div>
+                    </div>
+                    <div class="rank-score">${record.score.toLocaleString()}</div>
+                `;
+                list.appendChild(item);
+            });
+        }
+        
+        // ==================== 工具函数 ====================
         function createParticles(cellIndex) {
             const cell = document.querySelector(`[data-index="${cellIndex}"]`);
             if (!cell) return;
             const rect = cell.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
-            const colorMap = { red: '#ff6b6b', blue: '#4ecdc4', green: '#95e1d3', yellow: '#ffd93d', purple: '#a8e6cf' };
+            const colorMap = { red: '#ff6b6b', blue: '#4ecdc4', green: '#95e1d3', yellow: '#ffd93d', purple: '#a8e6cf', ice: '#81d4fa', rock: '#bcaaa4' };
+            const color = gameState.grid[cellIndex]?.color || 'red';
             
             for (let i = 0; i < 6; i++) {
                 const particle = document.createElement('div');
@@ -1043,13 +1253,7 @@
                 const size = 4 + Math.random() * 6;
                 const angle = (Math.PI * 2 * i) / 6;
                 const velocity = 30 + Math.random() * 50;
-                particle.style.cssText = `
-                    width: ${size}px; height: ${size}px;
-                    background: ${colorMap[grid[cellIndex]?.color] || '#fff'};
-                    left: ${centerX}px; top: ${centerY}px;
-                    --tx: ${Math.cos(angle) * velocity}px;
-                    --ty: ${Math.sin(angle) * velocity}px;
-                `;
+                particle.style.cssText = `width:${size}px;height:${size}px;background:${colorMap[color]};left:${centerX}px;top:${centerY}px;--tx:${Math.cos(angle)*velocity}px;--ty:${Math.sin(angle)*velocity}px;`;
                 document.body.appendChild(particle);
                 setTimeout(() => particle.remove(), 600);
             }
@@ -1063,135 +1267,9 @@
             comboText.classList.add('show');
         }
         
-        // 检查游戏结束
-        function checkGameEnd() {
-            const missionComplete = Object.entries(mission).every(([color, target]) => (missionProgress[color] || 0) >= target);
-            
-            if (missionComplete) {
-                showEnd(true);
-            } else if (moves <= 0) {
-                showEnd(false);
-            }
-        }
-        
-        // 显示结束页
-        function showEnd(win) {
-            const icon = document.getElementById('resultIcon');
-            const title = document.getElementById('resultTitle');
-            const subtitle = document.getElementById('resultSubtitle');
-            const stars = document.getElementById('starsDisplay');
-            
-            document.getElementById('endLevel').textContent = currentLevel;
-            document.getElementById('endScore').textContent = score.toLocaleString();
-            document.getElementById('endMoves').textContent = moves;
-            document.getElementById('endCombo').textContent = maxCombo;
-            
-            if (win) {
-                icon.textContent = '🎉';
-                title.textContent = '通关成功!';
-                title.className = 'result-title win';
-                subtitle.textContent = '太棒了！完美完成所有任务';
-                
-                // 计算星星
-                let starCount = 1;
-                if (moves >= 5) starCount = 2;
-                if (moves >= 10) starCount = 3;
-                stars.textContent = '⭐'.repeat(starCount);
-                
-                // 保存进度
-                if (!levelStars[currentLevel] || starCount > levelStars[currentLevel]) {
-                    levelStars[currentLevel] = starCount;
-                    saveProgress();
-                }
-                
-                // 烟花效果
-                createFireworks();
-            } else {
-                icon.textContent = '😢';
-                title.textContent = '挑战失败';
-                title.className = 'result-title lose';
-                subtitle.textContent = '步数用尽，再试一次吧';
-                stars.textContent = '';
-            }
-            
-            showEnd();
-        }
-        
-        // 烟花效果
-        function createFireworks() {
-            const colors = ['#ff6b6b', '#4ecdc4', '#95e1d3', '#ffd93d', '#a8e6cf', '#667eea'];
-            
-            for (let i = 0; i < 5; i++) {
-                setTimeout(() => {
-                    const x = 20 + Math.random() * 60;
-                    const y = 20 + Math.random() * 40;
-                    createFirework(x, y, colors[Math.floor(Math.random() * colors.length)]);
-                }, i * 300);
-            }
-        }
-        
-        function createFirework(x, y, color) {
-            const fw = document.createElement('div');
-            fw.className = 'firework';
-            fw.style.left = x + '%';
-            fw.style.top = y + '%';
-            
-            for (let i = 0; i < 20; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'firework-particle';
-                particle.style.background = color;
-                const angle = (Math.PI * 2 * i) / 20;
-                const velocity = 50 + Math.random() * 50;
-                particle.style.setProperty('--tx', Math.cos(angle) * velocity + 'px');
-                particle.style.setProperty('--ty', Math.sin(angle) * velocity + 'px');
-                fw.appendChild(particle);
-            }
-            
-            document.body.appendChild(fw);
-            setTimeout(() => fw.remove(), 1000);
-        }
-        
-        // 按钮处理
-        function nextLevelFromEnd() {
-            if (currentLevel < TOTAL_LEVELS) {
-                startLevel(currentLevel + 1);
-            } else {
-                showMenu();
-            }
-        }
-        
-        function restartFromEnd() {
-            startLevel(currentLevel);
-        }
-        
-        function restartLevel() {
-            startLevel(currentLevel);
-        }
-        
-        function showHint() {
-            for (let i = 0; i < CELL_COUNT; i++) {
-                const neighbors = getNeighbors(i);
-                for (let neighbor of neighbors) {
-                    [grid[i], grid[neighbor]] = [grid[neighbor], grid[i]];
-                    const matches = findMatches();
-                    [grid[i], grid[neighbor]] = [grid[neighbor], grid[i]];
-                    
-                    if (matches.length > 0) {
-                        const cell = document.querySelector(`[data-index="${i}"] .bubble`);
-                        if (cell) {
-                            cell.classList.add('hint');
-                            setTimeout(() => cell.classList.remove('hint'), 2000);
-                        }
-                        return;
-                    }
-                }
-            }
-        }
-        
         function getNeighbors(index) {
             const neighbors = [];
-            const x = index % GRID_SIZE;
-            const y = Math.floor(index / GRID_SIZE);
+            const x = index % GRID_SIZE, y = Math.floor(index / GRID_SIZE);
             if (x > 0) neighbors.push(index - 1);
             if (x < GRID_SIZE - 1) neighbors.push(index + 1);
             if (y > 0) neighbors.push(index - GRID_SIZE);
@@ -1199,31 +1277,20 @@
             return neighbors;
         }
         
-        // 数据持久化
-        function saveProgress() {
-            localStorage.setItem('bubbleMatchProgress', JSON.stringify(levelStars));
-        }
-        
-        function loadProgress() {
-            const saved = localStorage.getItem('bubbleMatchProgress');
-            if (saved) levelStars = JSON.parse(saved);
-        }
-        
-        function resetProgress() {
-            if (confirm('确定要重置所有进度吗？')) {
-                levelStars = {};
-                localStorage.removeItem('bubbleMatchProgress');
-                renderLevelGrid();
-            }
-        }
-        
         function updateUI() {
-            document.getElementById('score').textContent = score.toLocaleString();
-            document.getElementById('moves').textContent = moves;
+            document.getElementById('scoreDisplay').textContent = gameState.score.toLocaleString();
+            document.getElementById('comboDisplay').textContent = gameState.combo;
         }
         
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
+        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+        
+        function saveRankings() {
+            localStorage.setItem('bubbleMatchProRankings', JSON.stringify(rankings));
+        }
+        
+        function loadRankings() {
+            const saved = localStorage.getItem('bubbleMatchProRankings');
+            if (saved) rankings = JSON.parse(saved);
         }
         
         // 启动
