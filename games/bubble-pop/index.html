@@ -8,12 +8,11 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         :root {
-            --bg-dark: #0a0a0f;
-            --bubble-red: #ff6b6b;
-            --bubble-blue: #4ecdc4;
-            --bubble-green: #95e1d3;
-            --bubble-yellow: #ffd93d;
-            --bubble-purple: #a8e6cf;
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --gold: #ffd700;
+            --red: #ff6b6b;
+            --green: #4caf50;
         }
         
         body {
@@ -21,12 +20,207 @@
             min-height: 100vh;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             overflow: hidden;
-            display: flex;
+            color: #fff;
+        }
+        
+        /* 页面容器 */
+        .page {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: none;
             flex-direction: column;
         }
         
-        /* 顶部信息栏 */
-        .top-bar {
+        .page.active { display: flex; }
+        
+        /* 背景动画 */
+        .bg-animation {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .floating-bubble {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+            50% { transform: translateY(-30px) rotate(180deg); opacity: 0.6; }
+        }
+        
+        /* ========== 开始页 ========== */
+        .start-page {
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(ellipse at center, #2d2d44 0%, #0a0a0f 70%);
+        }
+        
+        .logo-container {
+            text-align: center;
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .game-logo {
+            font-size: 48px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #ffd700 50%, #ff6b6b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 60px rgba(102, 126, 234, 0.5);
+            margin-bottom: 10px;
+        }
+        
+        .game-subtitle {
+            font-size: 16px;
+            color: rgba(255,255,255,0.6);
+            letter-spacing: 8px;
+            margin-bottom: 60px;
+        }
+        
+        .start-btn {
+            padding: 20px 60px;
+            font-size: 24px;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.5);
+            animation: pulse 2s ease-in-out infinite;
+            transition: all 0.3s;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 10px 40px rgba(102, 126, 234, 0.5); }
+            50% { transform: scale(1.05); box-shadow: 0 15px 50px rgba(102, 126, 234, 0.7); }
+        }
+        
+        .start-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .version-text {
+            position: absolute;
+            bottom: 30px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.3);
+        }
+        
+        /* ========== 菜单页 ========== */
+        .menu-page {
+            padding: 20px;
+        }
+        
+        .menu-header {
+            text-align: center;
+            padding: 20px 0;
+        }
+        
+        .menu-title {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #ffd700 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            padding: 20px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .level-card {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .level-card:hover, .level-card:active {
+            transform: scale(1.05);
+            border-color: rgba(102, 126, 234, 0.5);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .level-card.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .level-card.locked::after {
+            content: '🔒';
+            font-size: 24px;
+            position: absolute;
+        }
+        
+        .level-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        .level-stars {
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .level-stars.gold {
+            color: #ffd700;
+        }
+        
+        .menu-footer {
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .menu-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s;
+        }
+        
+        .menu-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        /* ========== 游戏页 ========== */
+        .game-page {
+            background: linear-gradient(180deg, #1a1a2e 0%, #0a0a0f 100%);
+        }
+        
+        .game-header {
             padding: 15px 20px;
             display: flex;
             justify-content: space-between;
@@ -35,63 +229,35 @@
             backdrop-filter: blur(10px);
         }
         
-        .level-info {
+        .level-info { color: #fff; }
+        .level-num { font-size: 24px; font-weight: 700; }
+        .level-label { font-size: 12px; color: rgba(255,255,255,0.6); }
+        
+        .score-board { text-align: center; color: #ffd700; }
+        .score-value { font-size: 28px; font-weight: 700; text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+        .score-label { font-size: 11px; color: rgba(255,215,0,0.7); }
+        
+        .moves-left { text-align: right; color: #fff; }
+        .moves-value { font-size: 24px; font-weight: 700; color: #ff6b6b; }
+        .moves-label { font-size: 12px; color: rgba(255,255,255,0.6); }
+        
+        .back-btn {
+            padding: 8px 15px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 20px;
             color: #fff;
+            cursor: pointer;
+            font-size: 14px;
         }
         
-        .level-num {
-            font-size: 24px;
-            font-weight: 700;
-        }
-        
-        .level-label {
-            font-size: 12px;
-            color: rgba(255,255,255,0.6);
-        }
-        
-        .score-board {
-            text-align: center;
-            color: #ffd700;
-        }
-        
-        .score-value {
-            font-size: 28px;
-            font-weight: 700;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-        }
-        
-        .score-label {
-            font-size: 11px;
-            color: rgba(255,215,0,0.7);
-        }
-        
-        .moves-left {
-            text-align: right;
-            color: #fff;
-        }
-        
-        .moves-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: #ff6b6b;
-        }
-        
-        .moves-label {
-            font-size: 12px;
-            color: rgba(255,255,255,0.6);
-        }
-        
-        /* 任务目标 */
         .mission-bar {
             padding: 10px 20px;
             background: rgba(255,255,255,0.05);
             display: flex;
             gap: 15px;
             overflow-x: auto;
-            scrollbar-width: none;
         }
-        
-        .mission-bar::-webkit-scrollbar { display: none; }
         
         .mission-item {
             display: flex;
@@ -101,7 +267,6 @@
             background: rgba(0,0,0,0.3);
             border-radius: 20px;
             border: 2px solid transparent;
-            transition: all 0.3s;
         }
         
         .mission-item.completed {
@@ -110,8 +275,7 @@
         }
         
         .mission-bubble {
-            width: 24px;
-            height: 24px;
+            width: 24px; height: 24px;
             border-radius: 50%;
             box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
@@ -122,11 +286,22 @@
             font-weight: 600;
         }
         
-        .mission-text span {
-            color: #ffd700;
+        .mission-text span { color: #ffd700; }
+        
+        .progress-container { padding: 0 20px 10px; }
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 3px;
+            transition: width 0.5s ease-out;
         }
         
-        /* 游戏区域 */
         .game-area {
             flex: 1;
             display: flex;
@@ -140,7 +315,6 @@
             background: rgba(0,0,0,0.2);
             border-radius: 15px;
             padding: 10px;
-            box-shadow: inset 0 2px 20px rgba(0,0,0,0.5);
         }
         
         .bubble-grid {
@@ -151,7 +325,6 @@
             aspect-ratio: 1;
         }
         
-        /* 泡泡样式 */
         .bubble-cell {
             aspect-ratio: 1;
             position: relative;
@@ -159,15 +332,11 @@
         }
         
         .bubble {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             border-radius: 50%;
             position: relative;
             transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            box-shadow: 
-                inset -3px -3px 8px rgba(0,0,0,0.3),
-                inset 3px 3px 8px rgba(255,255,255,0.4),
-                0 4px 10px rgba(0,0,0,0.3);
+            box-shadow: inset -3px -3px 8px rgba(0,0,0,0.3), inset 3px 3px 8px rgba(255,255,255,0.4), 0 4px 10px rgba(0,0,0,0.3);
         }
         
         .bubble::before {
@@ -180,21 +349,15 @@
             transform: rotate(-20deg);
         }
         
-        /* 五种颜色 */
         .bubble-red { background: radial-gradient(circle at 30% 30%, #ff8e8e, #ff6b6b); }
         .bubble-blue { background: radial-gradient(circle at 30% 30%, #7fdbda, #4ecdc4); }
         .bubble-green { background: radial-gradient(circle at 30% 30%, #b8f0e6, #95e1d3); }
         .bubble-yellow { background: radial-gradient(circle at 30% 30%, #ffe566, #ffd93d); }
         .bubble-purple { background: radial-gradient(circle at 30% 30%, #c8f0e4, #a8e6cf); }
         
-        /* 选中状态 */
         .bubble.selected {
             transform: scale(1.15);
-            box-shadow: 
-                inset -3px -3px 8px rgba(0,0,0,0.3),
-                inset 3px 3px 8px rgba(255,255,255,0.4),
-                0 0 20px rgba(255,255,255,0.6),
-                0 0 40px rgba(255,255,255,0.3);
+            box-shadow: 0 0 20px rgba(255,255,255,0.6), 0 0 40px rgba(255,255,255,0.3);
             animation: selectedPulse 1s ease-in-out infinite;
         }
         
@@ -203,70 +366,29 @@
             50% { transform: scale(1.2); }
         }
         
-        /* 匹配提示 */
-        .bubble.hint {
-            animation: hintShake 0.5s ease-in-out infinite;
-        }
-        
+        .bubble.hint { animation: hintShake 0.5s ease-in-out infinite; }
         @keyframes hintShake {
             0%, 100% { transform: translateX(0) rotate(0deg); }
             25% { transform: translateX(-3px) rotate(-5deg); }
             75% { transform: translateX(3px) rotate(5deg); }
         }
         
-        /* 消除动画 */
-        .bubble.removing {
-            animation: popOut 0.3s ease-out forwards;
-        }
-        
+        .bubble.removing { animation: popOut 0.3s ease-out forwards; }
         @keyframes popOut {
             0% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.3); opacity: 0.8; }
             100% { transform: scale(0); opacity: 0; }
         }
         
-        /* 下落动画 */
-        .bubble.falling {
-            animation: fallIn 0.4s ease-out;
-        }
-        
+        .bubble.falling { animation: fallIn 0.4s ease-out; }
         @keyframes fallIn {
             0% { transform: translateY(-50px); opacity: 0; }
             100% { transform: translateY(0); opacity: 1; }
         }
         
-        /* 特效泡泡 */
-        .bubble.special-bomb {
-            background: radial-gradient(circle at 30% 30%, #ff6b6b, #c0392b);
-            box-shadow: 0 0 20px #ff6b6b, inset -3px -3px 8px rgba(0,0,0,0.3), inset 3px 3px 8px rgba(255,255,255,0.4);
-        }
-        
-        .bubble.special-bomb::after {
-            content: '💣';
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 20px;
-        }
-        
-        .bubble.special-row {
-            background: radial-gradient(circle at 30% 30%, #3498db, #2980b9);
-            box-shadow: 0 0 20px #3498db, inset -3px -3px 8px rgba(0,0,0,0.3), inset 3px 3px 8px rgba(255,255,255,0.4);
-        }
-        
-        .bubble.special-row::after {
-            content: '↔️';
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 16px;
-        }
-        
-        /* 连击显示 */
         .combo-display {
             position: fixed;
-            top: 40%;
-            left: 50%;
+            top: 40%; left: 50%;
             transform: translate(-50%, -50%);
             pointer-events: none;
             z-index: 1000;
@@ -280,7 +402,6 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             opacity: 0;
-            text-shadow: 0 0 60px rgba(255, 215, 0, 0.5);
         }
         
         .combo-text.show {
@@ -294,7 +415,6 @@
             100% { opacity: 0; transform: scale(0.8) translateY(-30px); }
         }
         
-        /* 粒子效果 */
         .particle {
             position: fixed;
             pointer-events: none;
@@ -307,212 +427,411 @@
             100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
         }
         
-        /* 底部控制 */
-        .bottom-controls {
+        .game-footer {
             padding: 15px 20px;
             display: flex;
             justify-content: center;
             gap: 15px;
         }
         
-        .control-btn {
+        .game-btn {
             padding: 12px 24px;
             border: none;
             border-radius: 25px;
             font-size: 14px;
-            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
         }
         
-        .btn-primary {
+        .game-btn.primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #fff;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
         
-        .btn-primary:hover { transform: translateY(-2px); }
-        
-        .btn-secondary {
+        .game-btn.secondary {
             background: rgba(255,255,255,0.1);
             color: #fff;
             border: 1px solid rgba(255,255,255,0.2);
         }
         
-        /* 胜利/失败弹窗 */
-        .modal {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: none;
+        /* ========== 结束页 ========== */
+        .end-page {
             align-items: center;
             justify-content: center;
-            z-index: 2000;
-        }
-        
-        .modal.show { display: flex; }
-        
-        .modal-content {
-            background: linear-gradient(135deg, #2d2d44 0%, #1a1a2e 100%);
+            background: radial-gradient(ellipse at center, #2d2d44 0%, #0a0a0f 70%);
             padding: 40px;
-            border-radius: 20px;
+        }
+        
+        .end-content {
             text-align: center;
-            max-width: 300px;
-            border: 1px solid rgba(255,255,255,0.1);
+            max-width: 400px;
         }
         
-        .modal-icon {
-            font-size: 60px;
+        .result-icon {
+            font-size: 100px;
             margin-bottom: 20px;
+            animation: bounce 1s ease-in-out infinite;
         }
         
-        .modal-title {
-            font-size: 28px;
-            font-weight: 700;
-            color: #fff;
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .result-title {
+            font-size: 48px;
+            font-weight: 900;
             margin-bottom: 10px;
         }
         
-        .modal-title.win { color: #4caf50; }
-        .modal-title.lose { color: #ff6b6b; }
+        .result-title.win {
+            background: linear-gradient(135deg, #ffd700 0%, #ff6b6b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
         
-        .modal-score {
+        .result-title.lose {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .result-subtitle {
             font-size: 18px;
-            color: #ffd700;
-            margin-bottom: 20px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 40px;
         }
         
-        .stars {
-            font-size: 36px;
-            margin-bottom: 20px;
+        .stats-panel {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
         
-        /* 进度条 */
-        .progress-container {
-            padding: 0 20px 10px;
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         
-        .progress-bar {
-            height: 6px;
+        .stat-row:last-child { border-bottom: none; }
+        
+        .stat-name {
+            font-size: 16px;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        .stat-value.gold { color: #ffd700; }
+        
+        .stars-display {
+            font-size: 48px;
+            margin: 20px 0;
+            animation: starPop 0.5s ease-out;
+        }
+        
+        @keyframes starPop {
+            0% { transform: scale(0); }
+            80% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .end-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .end-btn {
+            padding: 18px 40px;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .end-btn.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .end-btn.secondary {
             background: rgba(255,255,255,0.1);
-            border-radius: 3px;
-            overflow: hidden;
+            color: #fff;
+            border: 2px solid rgba(255,255,255,0.2);
         }
         
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            border-radius: 3px;
-            transition: width 0.5s ease-out;
-            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+        .end-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        /* 烟花效果 */
+        .firework {
+            position: fixed;
+            pointer-events: none;
+        }
+        
+        .firework-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            animation: fireworkFly 1s ease-out forwards;
+        }
+        
+        @keyframes fireworkFly {
+            0% { transform: translate(0, 0); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)); opacity: 0; }
         }
     </style>
 </head>
 <body>
-    <!-- 顶部信息 -->
-    <div class="top-bar">
-        <div class="level-info">
-            <div class="level-label">关卡</div>
-            <div class="level-num" id="levelNum">1</div>
+    <!-- 背景动画 -->
+    <div class="bg-animation" id="bgAnimation"></div>
+    
+    <!-- 开始页 -->
+    <div class="page start-page active" id="startPage">
+        <div class="logo-container">
+            <div class="game-logo">🫧 泡泡消消乐</div>
+            <div class="game-subtitle">BUBBLE MATCH</div>
         </div>
-        <div class="score-board">
-            <div class="score-label">得分</div>
-            <div class="score-value" id="score">0</div>
-        </div>
-        <div class="moves-left">
-            <div class="moves-label">剩余步数</div>
-            <div class="moves-value" id="moves">20</div>
-        </div>
+        <button class="start-btn" onclick="showMenu()">▶ 开始游戏</button>
+        
+        <div class="version-text">Version 1.0</div>
     </div>
     
-    <!-- 任务目标 -->
-    <div class="mission-bar" id="missionBar"></div>
-    
-    <!-- 进度条 -->
-    <div class="progress-container">
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    <!-- 菜单页 -->
+    <div class="page menu-page" id="menuPage">
+        <div class="menu-header">
+            <div class="menu-title">🎯 选择关卡</div>
         </div>
-    </div>
-    
-    <!-- 游戏区域 -->
-    <div class="game-area">
-        <div class="grid-container">
-            <div class="bubble-grid" id="grid"></div>
+        
+        <div class="level-grid" id="levelGrid"></div>
+        
+        <div class="menu-footer">
+            <button class="menu-btn" onclick="showStart()">← 返回</button>
+            <button class="menu-btn" onclick="resetProgress()">🔄 重置进度</button>
         </div>
     </div>
     
-    <!-- 连击显示 -->
-    <div class="combo-display">
-        <div class="combo-text" id="comboText"></div>
+    <!-- 游戏页 -->
+    <div class="page game-page" id="gamePage">
+        <div class="game-header">
+            <div class="level-info">
+                <button class="back-btn" onclick="showMenu()">← 菜单</button>
+            </div>
+            <div class="score-board">
+                <div class="score-label">得分</div>
+                <div class="score-value" id="score">0</div>
+            </div>
+            <div class="moves-left">
+                <div class="moves-label">剩余步数</div>
+                <div class="moves-value" id="moves">20</div>
+            </div>
+        </div>
+        
+        <div class="mission-bar" id="missionBar"></div>
+        
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+        </div>
+        
+        <div class="game-area">
+            <div class="grid-container">
+                <div class="bubble-grid" id="grid"></div>
+            </div>
+        </div>
+        
+        <div class="combo-display">
+            <div class="combo-text" id="comboText"></div>
+        </div>
+        
+        <div class="game-footer">
+            <button class="game-btn secondary" onclick="showHint()">💡 提示</button>
+            <button class="game-btn primary" onclick="restartLevel()">🔄 重开</button>
+        </div>
     </div>
     
-    <!-- 底部控制 -->
-    <div class="bottom-controls">
-        <button class="control-btn btn-secondary" onclick="showHint()">💡 提示</button>
-        <button class="control-btn btn-primary" onclick="restartLevel()">🔄 重开</button>
-    </div>
-    
-    <!-- 弹窗 -->
-    <div class="modal" id="modal">
-        <div class="modal-content">
-            <div class="modal-icon" id="modalIcon">🎉</div>
-            <div class="modal-title" id="modalTitle">通关!</div>
-            <div class="modal-score" id="modalScore">得分: 0</div>
-            <div class="stars" id="modalStars">⭐⭐⭐</div>
-            <button class="control-btn btn-primary" onclick="nextLevel()" id="modalBtn">下一关 →</button>
+    <!-- 结束页 -->
+    <div class="page end-page" id="endPage">
+        <div class="end-content">
+            <div class="result-icon" id="resultIcon">🎉</div>
+            <div class="result-title win" id="resultTitle">通关成功!</div>
+            <div class="result-subtitle" id="resultSubtitle">太棒了！完美完成所有任务</div>
+            
+            <div class="stars-display" id="starsDisplay">⭐⭐⭐</div>
+            
+            <div class="stats-panel">
+                <div class="stat-row">
+                    <span class="stat-name">关卡</span>
+                    <span class="stat-value" id="endLevel">1</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-name">最终得分</span>
+                    <span class="stat-value gold" id="endScore">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-name">剩余步数</span>
+                    <span class="stat-value" id="endMoves">5</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-name">最高连击</span>
+                    <span class="stat-value gold" id="endCombo">5</span>
+                </div>
+            </div>
+            
+            <div class="end-buttons">
+                <button class="end-btn primary" onclick="nextLevelFromEnd()">▶ 下一关</button>
+                <button class="end-btn secondary" onclick="showMenu()">📋 关卡菜单</button>
+                <button class="end-btn secondary" onclick="restartFromEnd()">🔄 重新挑战</button>
+            </div>
         </div>
     </div>
 
     <script>
+        // 游戏数据
         const COLORS = ['red', 'blue', 'green', 'yellow', 'purple'];
         const GRID_SIZE = 8;
         const CELL_COUNT = GRID_SIZE * GRID_SIZE;
+        const TOTAL_LEVELS = 15;
         
         let grid = [];
         let selectedCell = null;
         let score = 0;
         let moves = 20;
-        let level = 1;
+        let currentLevel = 1;
         let isProcessing = false;
         let mission = {};
         let missionProgress = {};
+        let maxCombo = 0;
+        let levelStars = {};
         
         // 关卡配置
         const levels = [
             { moves: 20, mission: { red: 10 }, targetScore: 1000 },
             { moves: 25, mission: { red: 15, blue: 15 }, targetScore: 2000 },
             { moves: 30, mission: { yellow: 20, green: 20 }, targetScore: 3000 },
-            { moves: 25, mission: { red: 10, blue: 10, green: 10, yellow: 10 }, targetScore: 4000 },
-            { moves: 20, mission: { purple: 30 }, targetScore: 5000 }
+            { moves: 25, mission: { red: 15, blue: 15, green: 15 }, targetScore: 4000 },
+            { moves: 20, mission: { purple: 30 }, targetScore: 5000 },
+            { moves: 30, mission: { red: 20, blue: 20, yellow: 20 }, targetScore: 6000 },
+            { moves: 25, mission: { green: 25, purple: 25 }, targetScore: 7000 },
+            { moves: 35, mission: { red: 20, blue: 20, green: 20, yellow: 20 }, targetScore: 8000 },
+            { moves: 30, mission: { purple: 40 }, targetScore: 9000 },
+            { moves: 25, mission: { red: 25, blue: 25, green: 25, yellow: 25, purple: 25 }, targetScore: 10000 },
+            { moves: 20, mission: { red: 30 }, targetScore: 8000 },
+            { moves: 25, mission: { blue: 35 }, targetScore: 9000 },
+            { moves: 30, mission: { green: 40 }, targetScore: 10000 },
+            { moves: 35, mission: { yellow: 45 }, targetScore: 11000 },
+            { moves: 40, mission: { purple: 50 }, targetScore: 12000 }
         ];
         
-        function initLevel() {
+        // 初始化
+        function init() {
+            loadProgress();
+            createBgBubbles();
+            renderLevelGrid();
+        }
+        
+        // 创建背景泡泡
+        function createBgBubbles() {
+            const container = document.getElementById('bgAnimation');
+            const colors = ['#667eea', '#764ba2', '#ffd700', '#ff6b6b'];
+            
+            for (let i = 0; i < 15; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'floating-bubble';
+                const size = 20 + Math.random() * 60;
+                bubble.style.cssText = `
+                    width: ${size}px;
+                    height: ${size}px;
+                    background: ${colors[Math.floor(Math.random() * colors.length)]};
+                    left: ${Math.random() * 100}%;
+                    top: ${Math.random() * 100}%;
+                    animation-delay: ${Math.random() * 5}s;
+                    animation-duration: ${6 + Math.random() * 4}s;
+                `;
+                container.appendChild(bubble);
+            }
+        }
+        
+        // 页面切换
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+        
+        function showStart() { showPage('startPage'); }
+        function showMenu() { 
+            renderLevelGrid();
+            showPage('menuPage'); 
+        }
+        function showGame() { showPage('gamePage'); }
+        function showEnd() { showPage('endPage'); }
+        
+        // 渲染关卡选择
+        function renderLevelGrid() {
+            const grid = document.getElementById('levelGrid');
+            grid.innerHTML = '';
+            
+            for (let i = 1; i <= TOTAL_LEVELS; i++) {
+                const card = document.createElement('div');
+                const stars = levelStars[i] || 0;
+                const locked = i > 1 && !levelStars[i - 1];
+                
+                card.className = `level-card ${locked ? 'locked' : ''}`;
+                card.innerHTML = `
+                    <div class="level-number">${i}</div>
+                    <div class="level-stars ${stars > 0 ? 'gold' : ''}">${stars > 0 ? '⭐'.repeat(stars) : '☆☆☆'}</div>
+                `;
+                
+                if (!locked) {
+                    card.onclick = () => startLevel(i);
+                }
+                
+                grid.appendChild(card);
+            }
+        }
+        
+        // 开始关卡
+        function startLevel(level) {
+            currentLevel = level;
             const config = levels[(level - 1) % levels.length];
             moves = config.moves;
             mission = { ...config.mission };
             missionProgress = {};
             Object.keys(mission).forEach(k => missionProgress[k] = 0);
             score = 0;
+            maxCombo = 0;
             selectedCell = null;
             isProcessing = false;
             
             updateUI();
             renderMission();
             initGrid();
+            showGame();
         }
         
+        // 初始化游戏网格
         function initGrid() {
             grid = [];
             for (let i = 0; i < CELL_COUNT; i++) {
                 grid.push(createRandomBubble());
             }
             
-            // 确保初始没有匹配
             while (findMatches().length > 0) {
                 grid = [];
                 for (let i = 0; i < CELL_COUNT; i++) {
@@ -524,12 +843,10 @@
         }
         
         function createRandomBubble() {
-            return {
-                color: COLORS[Math.floor(Math.random() * COLORS.length)],
-                special: null
-            };
+            return { color: COLORS[Math.floor(Math.random() * COLORS.length)] };
         }
         
+        // 渲染任务
         function renderMission() {
             const bar = document.getElementById('missionBar');
             bar.innerHTML = '';
@@ -547,13 +864,12 @@
                 bar.appendChild(item);
             });
             
-            // 更新进度条
             const totalTarget = Object.values(mission).reduce((a, b) => a + b, 0);
             const totalCurrent = Object.values(missionProgress).reduce((a, b) => a + b, 0);
-            const progress = Math.min(100, (totalCurrent / totalTarget) * 100);
-            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressFill').style.width = Math.min(100, (totalCurrent / totalTarget) * 100) + '%';
         }
         
+        // 渲染网格
         function renderGrid() {
             const gridEl = document.getElementById('grid');
             gridEl.innerHTML = '';
@@ -566,7 +882,6 @@
                 if (cell) {
                     const bubble = document.createElement('div');
                     bubble.className = `bubble bubble-${cell.color}`;
-                    if (cell.special) bubble.classList.add(`special-${cell.special}`);
                     if (index === selectedCell) bubble.classList.add('selected');
                     cellEl.appendChild(bubble);
                 }
@@ -576,6 +891,7 @@
             });
         }
         
+        // 点击处理
         function onCellClick(index) {
             if (isProcessing || !grid[index]) return;
             
@@ -599,63 +915,52 @@
             return Math.abs(ax - bx) + Math.abs(ay - by) === 1;
         }
         
+        // 交换逻辑
         async function trySwap(a, b) {
             isProcessing = true;
             selectedCell = null;
             
-            // 交换
             [grid[a], grid[b]] = [grid[b], grid[a]];
             renderGrid();
             
             const matches = findMatches();
             
             if (matches.length === 0) {
-                // 没有匹配，交换回来
                 await sleep(200);
                 [grid[a], grid[b]] = [grid[b], grid[a]];
                 renderGrid();
                 isProcessing = false;
             } else {
-                // 有匹配，执行消除
                 moves--;
                 updateUI();
                 await processMatches();
-                
-                if (moves <= 0) {
-                    checkGameEnd();
-                }
+                if (moves <= 0) checkGameEnd();
             }
         }
         
         function findMatches() {
             const matches = new Set();
             
-            // 检查横向
+            // 横向
             for (let y = 0; y < GRID_SIZE; y++) {
                 for (let x = 0; x < GRID_SIZE - 2; x++) {
                     const idx = y * GRID_SIZE + x;
                     if (!grid[idx] || !grid[idx + 1] || !grid[idx + 2]) continue;
-                    
                     const c1 = grid[idx].color;
                     if (grid[idx + 1].color === c1 && grid[idx + 2].color === c1) {
-                        matches.add(idx);
-                        matches.add(idx + 1);
-                        matches.add(idx + 2);
+                        matches.add(idx); matches.add(idx + 1); matches.add(idx + 2);
                     }
                 }
             }
             
-            // 检查纵向
+            // 纵向
             for (let x = 0; x < GRID_SIZE; x++) {
                 for (let y = 0; y < GRID_SIZE - 2; y++) {
                     const idx = y * GRID_SIZE + x;
                     if (!grid[idx] || !grid[idx + GRID_SIZE] || !grid[idx + GRID_SIZE * 2]) continue;
-                    
                     const c1 = grid[idx].color;
                     if (grid[idx + GRID_SIZE].color === c1 && grid[idx + GRID_SIZE * 2].color === c1) {
-                        matches.add(idx);
-                        matches.add(idx + GRID_SIZE);
-                        matches.add(idx + GRID_SIZE * 2);
+                        matches.add(idx); matches.add(idx + GRID_SIZE); matches.add(idx + GRID_SIZE * 2);
                     }
                 }
             }
@@ -663,6 +968,7 @@
             return Array.from(matches);
         }
         
+        // 处理匹配
         async function processMatches() {
             let combo = 0;
             
@@ -671,12 +977,11 @@
                 if (matches.length === 0) break;
                 
                 combo++;
+                if (combo > maxCombo) maxCombo = combo;
                 
-                // 更新分数
                 const points = matches.length * 10 * combo;
                 score += points;
                 
-                // 更新任务进度
                 matches.forEach(idx => {
                     const color = grid[idx].color;
                     if (mission[color] && missionProgress[color] < mission[color]) {
@@ -684,10 +989,8 @@
                     }
                 });
                 
-                // 显示连击
                 if (combo > 1) showCombo(combo);
                 
-                // 消除动画
                 matches.forEach(idx => {
                     const cell = document.querySelector(`[data-index="${idx}"] .bubble`);
                     if (cell) {
@@ -700,12 +1003,10 @@
                 renderMission();
                 await sleep(300);
                 
-                // 清除并下落
                 matches.forEach(idx => grid[idx] = null);
                 applyGravity();
                 renderGrid();
                 
-                // 新泡泡动画
                 document.querySelectorAll('.bubble').forEach(b => b.classList.add('falling'));
                 await sleep(200);
             }
@@ -721,14 +1022,9 @@
                     const idx = y * GRID_SIZE + x;
                     if (grid[idx]) column.push(grid[idx]);
                 }
-                
-                while (column.length < GRID_SIZE) {
-                    column.push(createRandomBubble());
-                }
-                
+                while (column.length < GRID_SIZE) column.push(createRandomBubble());
                 for (let y = GRID_SIZE - 1; y >= 0; y--) {
-                    const idx = y * GRID_SIZE + x;
-                    grid[idx] = column[GRID_SIZE - 1 - y];
+                    grid[y * GRID_SIZE + x] = column[GRID_SIZE - 1 - y];
                 }
             }
         }
@@ -736,11 +1032,9 @@
         function createParticles(cellIndex) {
             const cell = document.querySelector(`[data-index="${cellIndex}"]`);
             if (!cell) return;
-            
             const rect = cell.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
-            const color = grid[cellIndex]?.color || 'white';
             const colorMap = { red: '#ff6b6b', blue: '#4ecdc4', green: '#95e1d3', yellow: '#ffd93d', purple: '#a8e6cf' };
             
             for (let i = 0; i < 6; i++) {
@@ -749,17 +1043,13 @@
                 const size = 4 + Math.random() * 6;
                 const angle = (Math.PI * 2 * i) / 6;
                 const velocity = 30 + Math.random() * 50;
-                
                 particle.style.cssText = `
-                    width: ${size}px;
-                    height: ${size}px;
-                    background: ${colorMap[color]};
-                    left: ${centerX}px;
-                    top: ${centerY}px;
+                    width: ${size}px; height: ${size}px;
+                    background: ${colorMap[grid[cellIndex]?.color] || '#fff'};
+                    left: ${centerX}px; top: ${centerY}px;
                     --tx: ${Math.cos(angle) * velocity}px;
                     --ty: ${Math.sin(angle) * velocity}px;
                 `;
-                
                 document.body.appendChild(particle);
                 setTimeout(() => particle.remove(), 600);
             }
@@ -773,30 +1063,34 @@
             comboText.classList.add('show');
         }
         
+        // 检查游戏结束
         function checkGameEnd() {
-            const missionComplete = Object.entries(mission).every(([color, target]) => {
-                return (missionProgress[color] || 0) >= target;
-            });
+            const missionComplete = Object.entries(mission).every(([color, target]) => (missionProgress[color] || 0) >= target);
             
             if (missionComplete) {
-                showModal(true);
+                showEnd(true);
             } else if (moves <= 0) {
-                showModal(false);
+                showEnd(false);
             }
         }
         
-        function showModal(win) {
-            const modal = document.getElementById('modal');
-            const icon = document.getElementById('modalIcon');
-            const title = document.getElementById('modalTitle');
-            const scoreEl = document.getElementById('modalScore');
-            const stars = document.getElementById('modalStars');
-            const btn = document.getElementById('modalBtn');
+        // 显示结束页
+        function showEnd(win) {
+            const icon = document.getElementById('resultIcon');
+            const title = document.getElementById('resultTitle');
+            const subtitle = document.getElementById('resultSubtitle');
+            const stars = document.getElementById('starsDisplay');
+            
+            document.getElementById('endLevel').textContent = currentLevel;
+            document.getElementById('endScore').textContent = score.toLocaleString();
+            document.getElementById('endMoves').textContent = moves;
+            document.getElementById('endCombo').textContent = maxCombo;
             
             if (win) {
                 icon.textContent = '🎉';
-                title.textContent = '通关!';
-                title.className = 'modal-title win';
+                title.textContent = '通关成功!';
+                title.className = 'result-title win';
+                subtitle.textContent = '太棒了！完美完成所有任务';
                 
                 // 计算星星
                 let starCount = 1;
@@ -804,34 +1098,77 @@
                 if (moves >= 10) starCount = 3;
                 stars.textContent = '⭐'.repeat(starCount);
                 
-                btn.textContent = '下一关 →';
-                btn.onclick = nextLevel;
+                // 保存进度
+                if (!levelStars[currentLevel] || starCount > levelStars[currentLevel]) {
+                    levelStars[currentLevel] = starCount;
+                    saveProgress();
+                }
+                
+                // 烟花效果
+                createFireworks();
             } else {
                 icon.textContent = '😢';
-                title.textContent = '失败';
-                title.className = 'modal-title lose';
+                title.textContent = '挑战失败';
+                title.className = 'result-title lose';
+                subtitle.textContent = '步数用尽，再试一次吧';
                 stars.textContent = '';
-                btn.textContent = '重试';
-                btn.onclick = restartLevel;
             }
             
-            scoreEl.textContent = `得分: ${score}`;
-            modal.classList.add('show');
+            showEnd();
         }
         
-        function nextLevel() {
-            document.getElementById('modal').classList.remove('show');
-            level++;
-            initLevel();
+        // 烟花效果
+        function createFireworks() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#95e1d3', '#ffd93d', '#a8e6cf', '#667eea'];
+            
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const x = 20 + Math.random() * 60;
+                    const y = 20 + Math.random() * 40;
+                    createFirework(x, y, colors[Math.floor(Math.random() * colors.length)]);
+                }, i * 300);
+            }
+        }
+        
+        function createFirework(x, y, color) {
+            const fw = document.createElement('div');
+            fw.className = 'firework';
+            fw.style.left = x + '%';
+            fw.style.top = y + '%';
+            
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'firework-particle';
+                particle.style.background = color;
+                const angle = (Math.PI * 2 * i) / 20;
+                const velocity = 50 + Math.random() * 50;
+                particle.style.setProperty('--tx', Math.cos(angle) * velocity + 'px');
+                particle.style.setProperty('--ty', Math.sin(angle) * velocity + 'px');
+                fw.appendChild(particle);
+            }
+            
+            document.body.appendChild(fw);
+            setTimeout(() => fw.remove(), 1000);
+        }
+        
+        // 按钮处理
+        function nextLevelFromEnd() {
+            if (currentLevel < TOTAL_LEVELS) {
+                startLevel(currentLevel + 1);
+            } else {
+                showMenu();
+            }
+        }
+        
+        function restartFromEnd() {
+            startLevel(currentLevel);
         }
         
         function restartLevel() {
-            document.getElementById('modal').classList.remove('show');
-            initLevel();
+            startLevel(currentLevel);
         }
         
         function showHint() {
-            // 找到可能的移动
             for (let i = 0; i < CELL_COUNT; i++) {
                 const neighbors = getNeighbors(i);
                 for (let neighbor of neighbors) {
@@ -855,17 +1192,32 @@
             const neighbors = [];
             const x = index % GRID_SIZE;
             const y = Math.floor(index / GRID_SIZE);
-            
             if (x > 0) neighbors.push(index - 1);
             if (x < GRID_SIZE - 1) neighbors.push(index + 1);
             if (y > 0) neighbors.push(index - GRID_SIZE);
             if (y < GRID_SIZE - 1) neighbors.push(index + GRID_SIZE);
-            
             return neighbors;
         }
         
+        // 数据持久化
+        function saveProgress() {
+            localStorage.setItem('bubbleMatchProgress', JSON.stringify(levelStars));
+        }
+        
+        function loadProgress() {
+            const saved = localStorage.getItem('bubbleMatchProgress');
+            if (saved) levelStars = JSON.parse(saved);
+        }
+        
+        function resetProgress() {
+            if (confirm('确定要重置所有进度吗？')) {
+                levelStars = {};
+                localStorage.removeItem('bubbleMatchProgress');
+                renderLevelGrid();
+            }
+        }
+        
         function updateUI() {
-            document.getElementById('levelNum').textContent = level;
             document.getElementById('score').textContent = score.toLocaleString();
             document.getElementById('moves').textContent = moves;
         }
@@ -874,8 +1226,8 @@
             return new Promise(resolve => setTimeout(resolve, ms));
         }
         
-        // 初始化
-        initLevel();
+        // 启动
+        init();
     </script>
 </body>
 </html>
