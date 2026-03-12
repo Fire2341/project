@@ -94,7 +94,7 @@
             0% { transform: scale(1.2); }
             100% { transform: scale(1); }
         }
-        /* 物品样式 */
+        /* 原有物品样式 */
         .item-book {
             width: 40px;
             height: 55px;
@@ -126,6 +126,195 @@
             height: 50px;
             background: linear-gradient(135deg, #ff9ff3 0%, #f368e0 100%);
             border-radius: 3px 3px 12px 12px;
+        }
+        /* 衣柜物品 */
+        .item-clothes {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            border-radius: 5px;
+            position: relative;
+        }
+        .item-clothes::before {
+            content: '👕';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+        }
+        .item-shoe {
+            width: 45px;
+            height: 30px;
+            background: linear-gradient(135deg, #d63031 0%, #b71540 100%);
+            border-radius: 15px 15px 5px 5px;
+            position: relative;
+        }
+        .item-shoe::before {
+            content: '👟';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+        }
+        .item-bag {
+            width: 40px;
+            height: 45px;
+            background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
+            border-radius: 5px 5px 10px 10px;
+            position: relative;
+        }
+        .item-bag::before {
+            content: '👜';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 22px;
+        }
+        /* 厨房物品 */
+        .item-dish {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #dfe6e9 0%, #b2bec3 100%);
+            border-radius: 50%;
+            border: 3px solid #fff;
+            position: relative;
+        }
+        .item-dish::before {
+            content: '🍽️';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+        }
+        .item-spice {
+            width: 30px;
+            height: 45px;
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+            border-radius: 3px;
+            position: relative;
+        }
+        .item-spice::before {
+            content: '🧂';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18px;
+        }
+        .item-pot {
+            width: 55px;
+            height: 40px;
+            background: linear-gradient(135deg, #636e72 0%, #2d3436 100%);
+            border-radius: 5px 5px 15px 15px;
+            position: relative;
+        }
+        .item-pot::before {
+            content: '🍳';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+        }
+        /* 工具物品 */
+        .item-wrench {
+            width: 50px;
+            height: 20px;
+            background: linear-gradient(135deg, #b2bec3 0%, #636e72 100%);
+            border-radius: 5px;
+            position: relative;
+            transform: rotate(-45deg);
+        }
+        .item-wrench::before {
+            content: '🔧';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+        }
+        .item-screwdriver {
+            width: 50px;
+            height: 15px;
+            background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
+            border-radius: 3px;
+            position: relative;
+            transform: rotate(45deg);
+        }
+        .item-screwdriver::before {
+            content: '🪛';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+        }
+        .item-hammer {
+            width: 45px;
+            height: 50px;
+            background: linear-gradient(135deg, #8b4513 0%, #5d4037 100%);
+            border-radius: 5px;
+            position: relative;
+        }
+        .item-hammer::before {
+            content: '🔨';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 28px;
+        }
+        /* 行李箱物品 */
+        .item-tshirt {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #55efc4 0%, #00b894 100%);
+            border-radius: 5px;
+            position: relative;
+        }
+        .item-tshirt::before {
+            content: '👕';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 22px;
+        }
+        .item-pants {
+            width: 40px;
+            height: 50px;
+            background: linear-gradient(135deg, #0984e3 0%, #0749a5 100%);
+            border-radius: 5px;
+            position: relative;
+        }
+        .item-pants::before {
+            content: '👖';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 22px;
+        }
+        .item-sock {
+            width: 30px;
+            height: 40px;
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+            border-radius: 5px 5px 15px 15px;
+            position: relative;
+        }
+        .item-sock::before {
+            content: '🧦';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18px;
+        }
+        .item-hat {
+            width: 45px;
+            height: 35px;
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+            border-radius: 10px 10px 5px 5px;
+            position: relative;
+        }
+        .item-hat::before {
+            content: '🧢';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 22px;
         }
         .slot {
             position: absolute;
@@ -253,9 +442,7 @@
 
         <div class="scene-container">
             <div class="scene-title" id="sceneTitle">混乱的书桌</div>
-            <div class="storage-area" id="storageArea">
-                <!-- 收纳槽位 -->
-            </div>
+            <div class="storage-area" id="storageArea"></div>
         </div>
 
         <div class="controls">
@@ -277,50 +464,17 @@
 
     <script>
         const scenes = [
-            {
-                title: '📚 混乱的书桌',
-                items: [
-                    { type: 'book', count: 3 },
-                    { type: 'phone', count: 1 },
-                    { type: 'cosmetic', count: 2 }
-                ],
-                layout: 'desk'
-            },
-            {
-                title: '🧊 杂乱的冰箱',
-                items: [
-                    { type: 'bottle', count: 4 },
-                    { type: 'box', count: 3 }
-                ],
-                layout: 'fridge'
-            },
-            {
-                title: '💄 化妆台整理',
-                items: [
-                    { type: 'cosmetic', count: 5 },
-                    { type: 'phone', count: 1 },
-                    { type: 'book', count: 1 }
-                ],
-                layout: 'dresser'
-            },
-            {
-                title: '📦 储物间收纳',
-                items: [
-                    { type: 'box', count: 6 },
-                    { type: 'book', count: 2 },
-                    { type: 'bottle', count: 2 }
-                ],
-                layout: 'storage'
-            }
+            { title: '📚 混乱的书桌', items: [{ type: 'book', count: 3 }, { type: 'phone', count: 1 }, { type: 'cosmetic', count: 2 }], layout: 'desk' },
+            { title: '🧊 杂乱的冰箱', items: [{ type: 'bottle', count: 4 }, { type: 'box', count: 3 }], layout: 'fridge' },
+            { title: '💄 化妆台整理', items: [{ type: 'cosmetic', count: 5 }, { type: 'phone', count: 1 }, { type: 'book', count: 1 }], layout: 'dresser' },
+            { title: '📦 储物间收纳', items: [{ type: 'box', count: 6 }, { type: 'book', count: 2 }, { type: 'bottle', count: 2 }], layout: 'storage' },
+            { title: '👗 衣柜整理', items: [{ type: 'clothes', count: 4 }, { type: 'shoe', count: 3 }, { type: 'bag', count: 2 }], layout: 'wardrobe' },
+            { title: '🍳 厨房收纳', items: [{ type: 'dish', count: 4 }, { type: 'spice', count: 3 }, { type: 'pot', count: 2 }], layout: 'kitchen' },
+            { title: '🔧 工具箱整理', items: [{ type: 'wrench', count: 3 }, { type: 'screwdriver', count: 3 }, { type: 'hammer', count: 2 }], layout: 'toolbox' },
+            { title: '🧳 行李箱打包', items: [{ type: 'tshirt', count: 3 }, { type: 'pants', count: 2 }, { type: 'sock', count: 3 }, { type: 'hat', count: 1 }], layout: 'suitcase' }
         ];
 
-        let currentLevel = 0;
-        let placedItems = 0;
-        let totalItems = 0;
-        let startTime = Date.now();
-        let timerInterval;
-        let draggedItem = null;
-        let slots = [];
+        let currentLevel = 0, placedItems = 0, totalItems = 0, startTime = Date.now(), timerInterval, draggedItem = null, slots = [];
 
         function initLevel() {
             const scene = scenes[currentLevel];
@@ -331,10 +485,8 @@
             area.innerHTML = '';
             area.classList.remove('completed');
             
-            // 创建收纳槽位
             slots = createSlots(scene.layout, area);
             
-            // 创建物品
             let itemId = 0;
             scene.items.forEach(itemType => {
                 for (let i = 0; i < itemType.count; i++) {
@@ -350,52 +502,21 @@
 
         function createSlots(layout, container) {
             const slotPositions = {
-                desk: [
-                    { x: 10, y: 10, w: 80, h: 100 },
-                    { x: 100, y: 10, w: 80, h: 100 },
-                    { x: 190, y: 10, w: 80, h: 100 },
-                    { x: 10, y: 120, w: 100, h: 80 },
-                    { x: 120, y: 120, w: 100, h: 80 },
-                    { x: 230, y: 120, w: 100, h: 80 }
-                ],
-                fridge: [
-                    { x: 10, y: 10, w: 100, h: 120 },
-                    { x: 120, y: 10, w: 100, h: 120 },
-                    { x: 230, y: 10, w: 100, h: 120 },
-                    { x: 10, y: 140, w: 100, h: 120 },
-                    { x: 120, y: 140, w: 100, h: 120 },
-                    { x: 230, y: 140, w: 100, h: 120 }
-                ],
-                dresser: [
-                    { x: 10, y: 10, w: 60, h: 80 },
-                    { x: 80, y: 10, w: 60, h: 80 },
-                    { x: 150, y: 10, w: 60, h: 80 },
-                    { x: 220, y: 10, w: 60, h: 80 },
-                    { x: 290, y: 10, w: 60, h: 80 },
-                    { x: 80, y: 100, w: 80, h: 100 },
-                    { x: 170, y: 100, w: 80, h: 100 }
-                ],
-                storage: [
-                    { x: 10, y: 10, w: 90, h: 90 },
-                    { x: 110, y: 10, w: 90, h: 90 },
-                    { x: 210, y: 10, w: 90, h: 90 },
-                    { x: 10, y: 110, w: 90, h: 90 },
-                    { x: 110, y: 110, w: 90, h: 90 },
-                    { x: 210, y: 110, w: 90, h: 90 },
-                    { x: 10, y: 210, w: 90, h: 90 },
-                    { x: 110, y: 210, w: 90, h: 90 },
-                    { x: 210, y: 210, w: 90, h: 90 }
-                ]
+                desk: [{ x: 10, y: 10, w: 80, h: 100 }, { x: 100, y: 10, w: 80, h: 100 }, { x: 190, y: 10, w: 80, h: 100 }, { x: 10, y: 120, w: 100, h: 80 }, { x: 120, y: 120, w: 100, h: 80 }, { x: 230, y: 120, w: 100, h: 80 }],
+                fridge: [{ x: 10, y: 10, w: 100, h: 120 }, { x: 120, y: 10, w: 100, h: 120 }, { x: 230, y: 10, w: 100, h: 120 }, { x: 10, y: 140, w: 100, h: 120 }, { x: 120, y: 140, w: 100, h: 120 }, { x: 230, y: 140, w: 100, h: 120 }],
+                dresser: [{ x: 10, y: 10, w: 60, h: 80 }, { x: 80, y: 10, w: 60, h: 80 }, { x: 150, y: 10, w: 60, h: 80 }, { x: 220, y: 10, w: 60, h: 80 }, { x: 290, y: 10, w: 60, h: 80 }, { x: 80, y: 100, w: 80, h: 100 }, { x: 170, y: 100, w: 80, h: 100 }],
+                storage: [{ x: 10, y: 10, w: 90, h: 90 }, { x: 110, y: 10, w: 90, h: 90 }, { x: 210, y: 10, w: 90, h: 90 }, { x: 10, y: 110, w: 90, h: 90 }, { x: 110, y: 110, w: 90, h: 90 }, { x: 210, y: 110, w: 90, h: 90 }, { x: 10, y: 210, w: 90, h: 90 }, { x: 110, y: 210, w: 90, h: 90 }, { x: 210, y: 210, w: 90, h: 90 }],
+                wardrobe: [{ x: 10, y: 10, w: 100, h: 100 }, { x: 120, y: 10, w: 100, h: 100 }, { x: 230, y: 10, w: 100, h: 100 }, { x: 10, y: 120, w: 100, h: 80 }, { x: 120, y: 120, w: 100, h: 80 }, { x: 230, y: 120, w: 100, h: 80 }, { x: 10, y: 210, w: 100, h: 80 }, { x: 120, y: 210, w: 100, h: 80 }, { x: 230, y: 210, w: 100, h: 80 }],
+                kitchen: [{ x: 10, y: 10, w: 90, h: 90 }, { x: 110, y: 10, w: 90, h: 90 }, { x: 210, y: 10, w: 90, h: 90 }, { x: 10, y: 110, w: 90, h: 90 }, { x: 110, y: 110, w: 90, h: 90 }, { x: 210, y: 110, w: 90, h: 90 }, { x: 10, y: 210, w: 90, h: 90 }, { x: 110, y: 210, w: 90, h: 90 }, { x: 210, y: 210, w: 90, h: 90 }],
+                toolbox: [{ x: 10, y: 10, w: 100, h: 70 }, { x: 120, y: 10, w: 100, h: 70 }, { x: 230, y: 10, w: 100, h: 70 }, { x: 10, y: 90, w: 100, h: 70 }, { x: 120, y: 90, w: 100, h: 70 }, { x: 230, y: 90, w: 100, h: 70 }, { x: 10, y: 170, w: 100, h: 70 }, { x: 120, y: 170, w: 100, h: 70 }],
+                suitcase: [{ x: 10, y: 10, w: 80, h: 80 }, { x: 100, y: 10, w: 80, h: 80 }, { x: 190, y: 10, w: 80, h: 80 }, { x: 280, y: 10, w: 80, h: 80 }, { x: 10, y: 100, w: 80, h: 80 }, { x: 100, y: 100, w: 80, h: 80 }, { x: 190, y: 100, w: 80, h: 80 }, { x: 280, y: 100, w: 80, h: 80 }, { x: 10, y: 190, w: 80, h: 80 }]
             };
 
             const positions = slotPositions[layout] || slotPositions.desk;
             return positions.map((pos, i) => {
                 const slot = document.createElement('div');
                 slot.className = 'slot';
-                slot.style.left = pos.x + 'px';
-                slot.style.top = pos.y + 'px';
-                slot.style.width = pos.w + 'px';
-                slot.style.height = pos.h + 'px';
+                slot.style.cssText = `left:${pos.x}px;top:${pos.y}px;width:${pos.w}px;height:${pos.h}px`;
                 slot.dataset.index = i;
                 container.appendChild(slot);
                 return slot;
@@ -407,57 +528,40 @@
             item.className = `item item-${type}`;
             item.dataset.id = id;
             item.dataset.type = type;
-            
-            // 随机初始位置（在收纳区外）
-            const area = container.getBoundingClientRect();
-            const x = 20 + Math.random() * (area.width - 100);
-            const y = 20 + Math.random() * (area.height - 100);
-            item.style.left = x + 'px';
-            item.style.top = y + 'px';
-            
-            // 拖拽事件
+            const x = 20 + Math.random() * 250, y = 20 + Math.random() * 200;
+            item.style.cssText = `left:${x}px;top:${y}px`;
             item.addEventListener('mousedown', startDrag);
             item.addEventListener('touchstart', startDrag, { passive: false });
-            
             container.appendChild(item);
         }
 
         function startDrag(e) {
             e.preventDefault();
-            draggedItem = e.target;
+            draggedItem = e.target.closest('.item');
+            if (!draggedItem) return;
             draggedItem.classList.add('dragging');
             
             const touch = e.touches ? e.touches[0] : e;
             const rect = draggedItem.getBoundingClientRect();
-            const offsetX = touch.clientX - rect.left;
-            const offsetY = touch.clientY - rect.top;
+            const offsetX = touch.clientX - rect.left, offsetY = touch.clientY - rect.top;
+            const container = document.getElementById('storageArea').getBoundingClientRect();
             
             function move(e) {
                 const touch = e.touches ? e.touches[0] : e;
-                const container = document.getElementById('storageArea').getBoundingClientRect();
-                
-                let x = touch.clientX - container.left - offsetX;
-                let y = touch.clientY - container.top - offsetY;
-                
-                draggedItem.style.left = x + 'px';
-                draggedItem.style.top = y + 'px';
-                
-                // 高亮可能的槽位
+                draggedItem.style.left = (touch.clientX - container.left - offsetX) + 'px';
+                draggedItem.style.top = (touch.clientY - container.top - offsetY) + 'px';
                 highlightNearestSlot(draggedItem);
             }
-            
-            function end(e) {
+            function end() {
                 document.removeEventListener('mousemove', move);
                 document.removeEventListener('mouseup', end);
                 document.removeEventListener('touchmove', move);
                 document.removeEventListener('touchend', end);
-                
                 draggedItem.classList.remove('dragging');
                 checkPlacement(draggedItem);
                 draggedItem = null;
-                clearSlotHighlights();
+                slots.forEach(s => s.classList.remove('highlight'));
             }
-            
             document.addEventListener('mousemove', move);
             document.addEventListener('mouseup', end);
             document.addEventListener('touchmove', move, { passive: false });
@@ -465,67 +569,32 @@
         }
 
         function highlightNearestSlot(item) {
-            clearSlotHighlights();
-            const itemRect = item.getBoundingClientRect();
-            const itemCenter = {
-                x: itemRect.left + itemRect.width / 2,
-                y: itemRect.top + itemRect.height / 2
-            };
-            
-            let nearest = null;
-            let minDist = Infinity;
-            
+            slots.forEach(s => s.classList.remove('highlight'));
+            const itemRect = item.getBoundingClientRect(), itemCenter = { x: itemRect.left + itemRect.width/2, y: itemRect.top + itemRect.height/2 };
+            let nearest = null, minDist = Infinity;
             slots.forEach(slot => {
                 if (slot.classList.contains('filled')) return;
-                
-                const rect = slot.getBoundingClientRect();
-                const center = {
-                    x: rect.left + rect.width / 2,
-                    y: rect.top + rect.height / 2
-                };
+                const rect = slot.getBoundingClientRect(), center = { x: rect.left + rect.width/2, y: rect.top + rect.height/2 };
                 const dist = Math.hypot(itemCenter.x - center.x, itemCenter.y - center.y);
-                
-                if (dist < minDist && dist < 100) {
-                    minDist = dist;
-                    nearest = slot;
-                }
+                if (dist < minDist && dist < 80) { minDist = dist; nearest = slot; }
             });
-            
             if (nearest) nearest.classList.add('highlight');
         }
 
-        function clearSlotHighlights() {
-            slots.forEach(slot => slot.classList.remove('highlight'));
-        }
-
         function checkPlacement(item) {
-            const itemRect = item.getBoundingClientRect();
-            const itemCenter = {
-                x: itemRect.left + itemRect.width / 2,
-                y: itemRect.top + itemRect.height / 2
-            };
-            
+            const itemRect = item.getBoundingClientRect(), itemCenter = { x: itemRect.left + itemRect.width/2, y: itemRect.top + itemRect.height/2 };
             for (let slot of slots) {
                 if (slot.classList.contains('filled')) continue;
-                
                 const rect = slot.getBoundingClientRect();
-                if (itemCenter.x >= rect.left && itemCenter.x <= rect.right &&
-                    itemCenter.y >= rect.top && itemCenter.y <= rect.bottom) {
-                    
-                    // 放置到槽位中心
+                if (itemCenter.x >= rect.left && itemCenter.x <= rect.right && itemCenter.y >= rect.top && itemCenter.y <= rect.bottom) {
                     const container = document.getElementById('storageArea').getBoundingClientRect();
-                    item.style.left = (rect.left - container.left + rect.width / 2 - itemRect.width / 2) + 'px';
-                    item.style.top = (rect.top - container.top + rect.height / 2 - itemRect.height / 2) + 'px';
+                    item.style.left = (rect.left - container.left + rect.width/2 - itemRect.width/2) + 'px';
+                    item.style.top = (rect.top - container.top + rect.height/2 - itemRect.height/2) + 'px';
                     item.classList.add('item-placed');
-                    
                     slot.classList.add('filled');
                     item.dataset.placed = 'true';
-                    placedItems++;
-                    updateProgress();
-                    
-                    if (placedItems === totalItems) {
-                        levelComplete();
-                    }
+                    placedItems++; updateProgress();
+                    if (placedItems === totalItems) levelComplete();
                     return;
                 }
             }
@@ -533,8 +602,7 @@
 
         function updateProgress() {
             document.getElementById('itemCount').textContent = `${placedItems}/${totalItems}`;
-            const progress = (placedItems / totalItems) * 100;
-            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressBar').style.width = (placedItems / totalItems * 100) + '%';
         }
 
         function startTimer() {
@@ -542,55 +610,26 @@
             startTime = Date.now();
             timerInterval = setInterval(() => {
                 const elapsed = Math.floor((Date.now() - startTime) / 1000);
-                const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
-                const secs = String(elapsed % 60).padStart(2, '0');
-                document.getElementById('timer').textContent = `${mins}:${secs}`;
+                document.getElementById('timer').textContent = `${String(Math.floor(elapsed/60)).padStart(2,'0')}:${String(elapsed%60).padStart(2,'0')}`;
             }, 1000);
         }
 
         function levelComplete() {
             clearInterval(timerInterval);
             document.getElementById('storageArea').classList.add('completed');
-            setTimeout(() => {
-                document.getElementById('successModal').classList.add('show');
-            }, 500);
+            setTimeout(() => document.getElementById('successModal').classList.add('show'), 500);
         }
 
-        function closeModal() {
-            document.getElementById('successModal').classList.remove('show');
-            nextLevel();
-        }
-
-        function nextLevel() {
-            currentLevel = (currentLevel + 1) % scenes.length;
-            initLevel();
-        }
-
-        function resetLevel() {
-            initLevel();
-        }
-
+        function closeModal() { document.getElementById('successModal').classList.remove('show'); nextLevel(); }
+        function nextLevel() { currentLevel = (currentLevel + 1) % scenes.length; initLevel(); }
+        function resetLevel() { initLevel(); }
         function showHint() {
-            // 显示第一个未放置物品的提示
             const items = document.querySelectorAll('.item:not([data-placed="true"])');
             if (items.length > 0) {
-                const item = items[0];
-                item.style.animation = 'pulse 1s ease-in-out 3';
-                setTimeout(() => item.style.animation = '', 3000);
+                items[0].animate([{ transform: 'scale(1)' }, { transform: 'scale(1.2)' }, { transform: 'scale(1)' }], { duration: 600, iterations: 3 });
             }
         }
 
-        // 添加脉冲动画
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes pulse {
-                0%, 100% { transform: scale(1); box-shadow: 0 0 0 rgba(102, 126, 234, 0); }
-                50% { transform: scale(1.1); box-shadow: 0 0 20px rgba(102, 126, 234, 0.6); }
-            }
-        `;
-        document.head.appendChild(style);
-
-        // 初始化
         initLevel();
     </script>
 </body>
