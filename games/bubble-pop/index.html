@@ -3,93 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>泡泡纸 Pro - Bubble Wrap Pro</title>
+    <title>泡泡消消乐 - Bubble Match</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         :root {
             --bg-dark: #0a0a0f;
-            --bg-light: #1a1a2e;
-            --accent: #667eea;
-            --gold: #ffd700;
+            --bubble-red: #ff6b6b;
+            --bubble-blue: #4ecdc4;
+            --bubble-green: #95e1d3;
+            --bubble-yellow: #ffd93d;
+            --bubble-purple: #a8e6cf;
         }
         
         body {
-            background: var(--bg-dark);
+            background: linear-gradient(180deg, #1a1a2e 0%, #0a0a0f 100%);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             overflow: hidden;
-            position: relative;
+            display: flex;
+            flex-direction: column;
         }
         
-        /* 动态背景 */
-        .bg-gradient {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: 
-                radial-gradient(ellipse at 20% 80%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 20%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(118, 75, 162, 0.1) 0%, transparent 70%);
-            animation: bgPulse 8s ease-in-out infinite;
-            pointer-events: none;
-        }
-        
-        @keyframes bgPulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.05); }
-        }
-        
-        /* 顶部状态栏 */
-        .status-bar {
+        /* 顶部信息栏 */
+        .top-bar {
             padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(255,255,255,0.03);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            z-index: 100;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
         }
         
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-        }
-        
-        .stat-label {
-            font-size: 11px;
-            color: rgba(255,255,255,0.5);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .stat-value {
-            font-size: 20px;
-            font-weight: 700;
+        .level-info {
             color: #fff;
-            text-shadow: 0 0 20px currentColor;
         }
         
-        .stat-value.gold { color: var(--gold); }
-        .stat-value.combo { 
-            color: #ff6b6b; 
-            animation: comboPulse 0.3s ease-out;
+        .level-num {
+            font-size: 24px;
+            font-weight: 700;
         }
         
-        @keyframes comboPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.3); }
-            100% { transform: scale(1); }
+        .level-label {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        .score-board {
+            text-align: center;
+            color: #ffd700;
+        }
+        
+        .score-value {
+            font-size: 28px;
+            font-weight: 700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        
+        .score-label {
+            font-size: 11px;
+            color: rgba(255,215,0,0.7);
+        }
+        
+        .moves-left {
+            text-align: right;
+            color: #fff;
+        }
+        
+        .moves-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ff6b6b;
+        }
+        
+        .moves-label {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        /* 任务目标 */
+        .mission-bar {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.05);
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        
+        .mission-bar::-webkit-scrollbar { display: none; }
+        
+        .mission-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .mission-item.completed {
+            border-color: #4caf50;
+            background: rgba(76, 175, 80, 0.2);
+        }
+        
+        .mission-bubble {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        
+        .mission-text {
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .mission-text span {
+            color: #ffd700;
+        }
+        
+        /* 游戏区域 */
+        .game-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+        
+        .grid-container {
+            position: relative;
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: inset 0 2px 20px rgba(0,0,0,0.5);
+        }
+        
+        .bubble-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 4px;
+            width: min(85vw, 400px);
+            aspect-ratio: 1;
+        }
+        
+        /* 泡泡样式 */
+        .bubble-cell {
+            aspect-ratio: 1;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .bubble {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 
+                inset -3px -3px 8px rgba(0,0,0,0.3),
+                inset 3px 3px 8px rgba(255,255,255,0.4),
+                0 4px 10px rgba(0,0,0,0.3);
+        }
+        
+        .bubble::before {
+            content: '';
+            position: absolute;
+            top: 12%; left: 15%;
+            width: 30%; height: 25%;
+            background: radial-gradient(ellipse, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.3) 60%, transparent 70%);
+            border-radius: 50%;
+            transform: rotate(-20deg);
+        }
+        
+        /* 五种颜色 */
+        .bubble-red { background: radial-gradient(circle at 30% 30%, #ff8e8e, #ff6b6b); }
+        .bubble-blue { background: radial-gradient(circle at 30% 30%, #7fdbda, #4ecdc4); }
+        .bubble-green { background: radial-gradient(circle at 30% 30%, #b8f0e6, #95e1d3); }
+        .bubble-yellow { background: radial-gradient(circle at 30% 30%, #ffe566, #ffd93d); }
+        .bubble-purple { background: radial-gradient(circle at 30% 30%, #c8f0e4, #a8e6cf); }
+        
+        /* 选中状态 */
+        .bubble.selected {
+            transform: scale(1.15);
+            box-shadow: 
+                inset -3px -3px 8px rgba(0,0,0,0.3),
+                inset 3px 3px 8px rgba(255,255,255,0.4),
+                0 0 20px rgba(255,255,255,0.6),
+                0 0 40px rgba(255,255,255,0.3);
+            animation: selectedPulse 1s ease-in-out infinite;
+        }
+        
+        @keyframes selectedPulse {
+            0%, 100% { transform: scale(1.15); }
+            50% { transform: scale(1.2); }
+        }
+        
+        /* 匹配提示 */
+        .bubble.hint {
+            animation: hintShake 0.5s ease-in-out infinite;
+        }
+        
+        @keyframes hintShake {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(-3px) rotate(-5deg); }
+            75% { transform: translateX(3px) rotate(5deg); }
+        }
+        
+        /* 消除动画 */
+        .bubble.removing {
+            animation: popOut 0.3s ease-out forwards;
+        }
+        
+        @keyframes popOut {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.8; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+        
+        /* 下落动画 */
+        .bubble.falling {
+            animation: fallIn 0.4s ease-out;
+        }
+        
+        @keyframes fallIn {
+            0% { transform: translateY(-50px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        
+        /* 特效泡泡 */
+        .bubble.special-bomb {
+            background: radial-gradient(circle at 30% 30%, #ff6b6b, #c0392b);
+            box-shadow: 0 0 20px #ff6b6b, inset -3px -3px 8px rgba(0,0,0,0.3), inset 3px 3px 8px rgba(255,255,255,0.4);
+        }
+        
+        .bubble.special-bomb::after {
+            content: '💣';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+        }
+        
+        .bubble.special-row {
+            background: radial-gradient(circle at 30% 30%, #3498db, #2980b9);
+            box-shadow: 0 0 20px #3498db, inset -3px -3px 8px rgba(0,0,0,0.3), inset 3px 3px 8px rgba(255,255,255,0.4);
+        }
+        
+        .bubble.special-row::after {
+            content: '↔️';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
         }
         
         /* 连击显示 */
         .combo-display {
             position: fixed;
-            top: 50%;
+            top: 40%;
             left: 50%;
             transform: translate(-50%, -50%);
             pointer-events: none;
@@ -98,14 +274,12 @@
         }
         
         .combo-text {
-            font-size: 72px;
+            font-size: 64px;
             font-weight: 900;
-            background: linear-gradient(135deg, #ffd700 0%, #ff6b6b 50%, #ffd700 100%);
+            background: linear-gradient(135deg, #ffd700 0%, #ff6b6b 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
             opacity: 0;
-            transform: scale(0);
             text-shadow: 0 0 60px rgba(255, 215, 0, 0.5);
         }
         
@@ -114,154 +288,10 @@
         }
         
         @keyframes comboShow {
-            0% { opacity: 0; transform: scale(0) rotate(-10deg); }
-            30% { opacity: 1; transform: scale(1.2) rotate(5deg); }
+            0% { opacity: 0; transform: scale(0) rotate(-15deg); }
+            30% { opacity: 1; transform: scale(1.3) rotate(5deg); }
             60% { opacity: 1; transform: scale(1) rotate(0deg); }
-            100% { opacity: 0; transform: scale(0.8) translateY(-50px); }
-        }
-        
-        .combo-label {
-            font-size: 18px;
-            color: rgba(255,255,255,0.8);
-            letter-spacing: 8px;
-            text-transform: uppercase;
-            opacity: 0;
-        }
-        
-        .combo-label.show {
-            animation: labelShow 0.8s ease-out forwards;
-        }
-        
-        @keyframes labelShow {
-            0%, 60% { opacity: 0; transform: translateY(10px); }
-            70% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-10px); }
-        }
-        
-        /* 泡泡网格 */
-        .bubble-container {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            perspective: 1000px;
-        }
-        
-        .bubble-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 12px;
-            padding: 20px;
-            background: rgba(255,255,255,0.02);
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
-            transform-style: preserve-3d;
-        }
-        
-        /* 3D 泡泡 */
-        .bubble-wrapper {
-            width: 60px;
-            height: 60px;
-            position: relative;
-            transform-style: preserve-3d;
-        }
-        
-        .bubble {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            position: relative;
-            cursor: pointer;
-            transform-style: preserve-3d;
-            transition: transform 0.15s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            background: 
-                radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.4) 20%, transparent 40%),
-                radial-gradient(circle at 70% 70%, rgba(0,0,0,0.1) 0%, transparent 50%),
-                linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.9) 100%);
-            box-shadow: 
-                inset -5px -5px 15px rgba(0,0,0,0.3),
-                inset 5px 5px 15px rgba(255,255,255,0.4),
-                0 8px 25px rgba(102, 126, 234, 0.3),
-                0 0 0 1px rgba(255,255,255,0.1);
-        }
-        
-        .bubble::before {
-            content: '';
-            position: absolute;
-            top: 8%; left: 12%;
-            width: 25%; height: 20%;
-            background: radial-gradient(ellipse, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.6) 40%, transparent 70%);
-            border-radius: 50%;
-            transform: rotate(-15deg);
-            filter: blur(0.5px);
-        }
-        
-        .bubble::after {
-            content: '';
-            position: absolute;
-            bottom: 15%; right: 15%;
-            width: 15%; height: 15%;
-            background: rgba(255,255,255,0.3);
-            border-radius: 50%;
-            filter: blur(1px);
-        }
-        
-        /* 按下凹陷效果 */
-        .bubble.pressing {
-            transform: scale(0.85) translateZ(-10px);
-            box-shadow: 
-                inset -8px -8px 20px rgba(0,0,0,0.4),
-                inset 8px 8px 20px rgba(255,255,255,0.2),
-                0 4px 10px rgba(102, 126, 234, 0.2);
-        }
-        
-        /* 破裂状态 */
-        .bubble.popped {
-            transform: scale(0.6);
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.2s ease-out;
-        }
-        
-        /* 破裂后的凹坑 */
-        .bubble-dent {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            border-radius: 50%;
-            background: 
-                radial-gradient(circle at 50% 50%, rgba(0,0,0,0.3) 0%, transparent 60%),
-                linear-gradient(135deg, #2d2d44 0%, #1a1a2e 100%);
-            box-shadow: 
-                inset 3px 3px 10px rgba(0,0,0,0.5),
-                inset -2px -2px 5px rgba(255,255,255,0.05);
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 0.3s ease-out;
-        }
-        
-        .bubble-dent.show {
-            opacity: 1;
-            transform: scale(1);
-        }
-        
-        /* 金色泡泡 */
-        .bubble.golden {
-            background: 
-                radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95) 0%, rgba(255,215,0,0.6) 20%, transparent 40%),
-                linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
-            box-shadow: 
-                inset -5px -5px 15px rgba(0,0,0,0.2),
-                inset 5px 5px 15px rgba(255,255,255,0.5),
-                0 0 30px rgba(255, 215, 0, 0.5),
-                0 8px 25px rgba(255, 140, 0, 0.4);
-            animation: goldGlow 2s ease-in-out infinite;
-        }
-        
-        @keyframes goldGlow {
-            0%, 100% { box-shadow: inset -5px -5px 15px rgba(0,0,0,0.2), inset 5px 5px 15px rgba(255,255,255,0.5), 0 0 30px rgba(255, 215, 0, 0.5), 0 8px 25px rgba(255, 140, 0, 0.4); }
-            50% { box-shadow: inset -5px -5px 15px rgba(0,0,0,0.2), inset 5px 5px 15px rgba(255,255,255,0.5), 0 0 50px rgba(255, 215, 0, 0.8), 0 8px 25px rgba(255, 140, 0, 0.6); }
+            100% { opacity: 0; transform: scale(0.8) translateY(-30px); }
         }
         
         /* 粒子效果 */
@@ -273,334 +303,461 @@
         }
         
         @keyframes particleFly {
-            0% {
-                transform: translate(0, 0) scale(1);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(var(--tx), var(--ty)) scale(0);
-                opacity: 0;
-            }
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
         }
         
-        /* 底部控制栏 */
-        .controls {
-            padding: 20px;
+        /* 底部控制 */
+        .bottom-controls {
+            padding: 15px 20px;
             display: flex;
-            gap: 12px;
             justify-content: center;
-            flex-wrap: wrap;
-            background: rgba(0,0,0,0.3);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255,255,255,0.05);
+            gap: 15px;
         }
         
         .control-btn {
             padding: 12px 24px;
             border: none;
             border-radius: 25px;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         
-        .control-btn.primary {
+        .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #fff;
-            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
         
-        .control-btn.secondary {
+        .btn-primary:hover { transform: translateY(-2px); }
+        
+        .btn-secondary {
             background: rgba(255,255,255,0.1);
             color: #fff;
             border: 1px solid rgba(255,255,255,0.2);
         }
         
-        .control-btn:hover {
-            transform: translateY(-3px) scale(1.02);
-        }
-        
-        .control-btn:active {
-            transform: translateY(-1px) scale(0.98);
-        }
-        
-        /* 音效开关 */
-        .sound-btn {
+        /* 胜利/失败弹窗 */
+        .modal {
             position: fixed;
-            top: 15px;
-            right: 15px;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.15);
-            color: #fff;
-            cursor: pointer;
-            display: flex;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s;
-            z-index: 200;
+            z-index: 2000;
         }
         
-        .sound-btn:hover {
-            background: rgba(255,255,255,0.2);
-            transform: scale(1.1);
+        .modal.show { display: flex; }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #2d2d44 0%, #1a1a2e 100%);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 300px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
         
-        /* 主题选择器 */
-        .theme-selector {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(20px);
-            padding: 15px;
-            border-radius: 50px;
-            display: flex;
-            gap: 10px;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s ease-out;
-            z-index: 300;
+        .modal-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
         }
         
-        .theme-selector.show {
-            opacity: 1;
-            pointer-events: all;
-            transform: translateX(-50%) translateY(0);
-        }
-        
-        .theme-dot {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 3px solid transparent;
-            transition: all 0.2s;
-            position: relative;
-        }
-        
-        .theme-dot:hover {
-            transform: scale(1.15);
-        }
-        
-        .theme-dot.active {
-            border-color: #fff;
-            box-shadow: 0 0 20px currentColor;
-        }
-        
-        .theme-dot::after {
-            content: '✓';
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
+        .modal-title {
+            font-size: 28px;
+            font-weight: 700;
             color: #fff;
-            font-size: 16px;
-            opacity: 0;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
         }
         
-        .theme-dot.active::after {
-            opacity: 1;
+        .modal-title.win { color: #4caf50; }
+        .modal-title.lose { color: #ff6b6b; }
+        
+        .modal-score {
+            font-size: 18px;
+            color: #ffd700;
+            margin-bottom: 20px;
         }
         
-        /* 响应式 */
-        @media (max-width: 400px) {
-            .bubble-wrapper { width: 50px; height: 50px; }
-            .bubble-grid { gap: 8px; padding: 15px; }
-            .stat-value { font-size: 18px; }
+        .stars {
+            font-size: 36px;
+            margin-bottom: 20px;
         }
         
-        /* 震动效果（设备支持时） */
-        @media (prefers-reduced-motion: no-preference) {
-            .bubble.pop-effect {
-                animation: shake 0.1s ease-in-out;
-            }
-            
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                25% { transform: translateX(-2px); }
-                75% { transform: translateX(2px); }
-            }
+        /* 进度条 */
+        .progress-container {
+            padding: 0 20px 10px;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 3px;
+            transition: width 0.5s ease-out;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
         }
     </style>
 </head>
 <body>
-    <div class="bg-gradient"></div>
-    
-    <button class="sound-btn" id="soundBtn">🔊</button>
-    
-    <div class="status-bar">
-        <div class="stat-item">
-            <span class="stat-label">已戳破</span>
-            <span class="stat-value" id="popCount">0</span>
+    <!-- 顶部信息 -->
+    <div class="top-bar">
+        <div class="level-info">
+            <div class="level-label">关卡</div>
+            <div class="level-num" id="levelNum">1</div>
         </div>
-        <div class="stat-item">
-            <span class="stat-label">连击</span>
-            <span class="stat-value combo" id="comboCount">0</span>
+        <div class="score-board">
+            <div class="score-label">得分</div>
+            <div class="score-value" id="score">0</div>
         </div>
-        <div class="stat-item">
-            <span class="stat-label">金币</span>
-            <span class="stat-value gold" id="coinCount">0</span>
+        <div class="moves-left">
+            <div class="moves-label">剩余步数</div>
+            <div class="moves-value" id="moves">20</div>
         </div>
     </div>
     
+    <!-- 任务目标 -->
+    <div class="mission-bar" id="missionBar"></div>
+    
+    <!-- 进度条 -->
+    <div class="progress-container">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+    </div>
+    
+    <!-- 游戏区域 -->
+    <div class="game-area">
+        <div class="grid-container">
+            <div class="bubble-grid" id="grid"></div>
+        </div>
+    </div>
+    
+    <!-- 连击显示 -->
     <div class="combo-display">
-        <div class="combo-text" id="comboText">10</div>
-        <div class="combo-label" id="comboLabel">连击!</div>
+        <div class="combo-text" id="comboText"></div>
     </div>
     
-    <div class="bubble-container">
-        <div class="bubble-grid" id="bubbleGrid"></div>
+    <!-- 底部控制 -->
+    <div class="bottom-controls">
+        <button class="control-btn btn-secondary" onclick="showHint()">💡 提示</button>
+        <button class="control-btn btn-primary" onclick="restartLevel()">🔄 重开</button>
     </div>
     
-    <div class="theme-selector" id="themeSelector">
-        <div class="theme-dot active" data-theme="0" style="background: linear-gradient(135deg, #667eea, #764ba2)"></div>
-        <div class="theme-dot" data-theme="1" style="background: linear-gradient(135deg, #f093fb, #f5576c)"></div>
-        <div class="theme-dot" data-theme="2" style="background: linear-gradient(135deg, #4facfe, #00f2fe)"></div>
-        <div class="theme-dot" data-theme="3" style="background: linear-gradient(135deg, #43e97b, #38f9d7)"></div>
-        <div class="theme-dot" data-theme="4" style="background: linear-gradient(135deg, #fa709a, #fee140)"></div>
-    </div>
-    
-    <div class="controls">
-        <button class="control-btn secondary" onclick="resetGrid()">🔄 重置</button>
-        <button class="control-btn primary" onclick="autoPop()">▶️ 自动解压</button>
-        <button class="control-btn secondary" onclick="toggleTheme()">🎨 主题</button>
+    <!-- 弹窗 -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-icon" id="modalIcon">🎉</div>
+            <div class="modal-title" id="modalTitle">通关!</div>
+            <div class="modal-score" id="modalScore">得分: 0</div>
+            <div class="stars" id="modalStars">⭐⭐⭐</div>
+            <button class="control-btn btn-primary" onclick="nextLevel()" id="modalBtn">下一关 →</button>
+        </div>
     </div>
 
     <script>
-        // 游戏状态
-        const state = {
-            popCount: 0,
-            combo: 0,
-            coins: 0,
-            soundEnabled: true,
-            lastPopTime: 0,
-            currentTheme: 0,
-            isAutoPopping: false
-        };
+        const COLORS = ['red', 'blue', 'green', 'yellow', 'purple'];
+        const GRID_SIZE = 8;
+        const CELL_COUNT = GRID_SIZE * GRID_SIZE;
         
-        // 主题配置
-        const themes = [
-            { name: '梦幻紫', primary: '#667eea', secondary: '#764ba2' },
-            { name: '樱花粉', primary: '#f093fb', secondary: '#f5576c' },
-            { name: '天空蓝', primary: '#4facfe', secondary: '#00f2fe' },
-            { name: '薄荷绿', primary: '#43e97b', secondary: '#38f9d7' },
-            { name: '夕阳橙', primary: '#fa709a', secondary: '#fee140' }
+        let grid = [];
+        let selectedCell = null;
+        let score = 0;
+        let moves = 20;
+        let level = 1;
+        let isProcessing = false;
+        let mission = {};
+        let missionProgress = {};
+        
+        // 关卡配置
+        const levels = [
+            { moves: 20, mission: { red: 10 }, targetScore: 1000 },
+            { moves: 25, mission: { red: 15, blue: 15 }, targetScore: 2000 },
+            { moves: 30, mission: { yellow: 20, green: 20 }, targetScore: 3000 },
+            { moves: 25, mission: { red: 10, blue: 10, green: 10, yellow: 10 }, targetScore: 4000 },
+            { moves: 20, mission: { purple: 30 }, targetScore: 5000 }
         ];
         
-        // DOM 元素
-        const grid = document.getElementById('bubbleGrid');
-        const popCountEl = document.getElementById('popCount');
-        const comboCountEl = document.getElementById('comboCount');
-        const coinCountEl = document.getElementById('coinCount');
-        const comboText = document.getElementById('comboText');
-        const comboLabel = document.getElementById('comboLabel');
-        const soundBtn = document.getElementById('soundBtn');
-        const themeSelector = document.getElementById('themeSelector');
+        function initLevel() {
+            const config = levels[(level - 1) % levels.length];
+            moves = config.moves;
+            mission = { ...config.mission };
+            missionProgress = {};
+            Object.keys(mission).forEach(k => missionProgress[k] = 0);
+            score = 0;
+            selectedCell = null;
+            isProcessing = false;
+            
+            updateUI();
+            renderMission();
+            initGrid();
+        }
         
-        // 音频上下文
-        let audioCtx;
+        function initGrid() {
+            grid = [];
+            for (let i = 0; i < CELL_COUNT; i++) {
+                grid.push(createRandomBubble());
+            }
+            
+            // 确保初始没有匹配
+            while (findMatches().length > 0) {
+                grid = [];
+                for (let i = 0; i < CELL_COUNT; i++) {
+                    grid.push(createRandomBubble());
+                }
+            }
+            
+            renderGrid();
+        }
         
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function createRandomBubble() {
+            return {
+                color: COLORS[Math.floor(Math.random() * COLORS.length)],
+                special: null
+            };
+        }
+        
+        function renderMission() {
+            const bar = document.getElementById('missionBar');
+            bar.innerHTML = '';
+            
+            Object.entries(mission).forEach(([color, target]) => {
+                const current = missionProgress[color] || 0;
+                const completed = current >= target;
+                
+                const item = document.createElement('div');
+                item.className = `mission-item ${completed ? 'completed' : ''}`;
+                item.innerHTML = `
+                    <div class="mission-bubble bubble-${color}"></div>
+                    <div class="mission-text">${current}/<span>${target}</span></div>
+                `;
+                bar.appendChild(item);
+            });
+            
+            // 更新进度条
+            const totalTarget = Object.values(mission).reduce((a, b) => a + b, 0);
+            const totalCurrent = Object.values(missionProgress).reduce((a, b) => a + b, 0);
+            const progress = Math.min(100, (totalCurrent / totalTarget) * 100);
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+        
+        function renderGrid() {
+            const gridEl = document.getElementById('grid');
+            gridEl.innerHTML = '';
+            
+            grid.forEach((cell, index) => {
+                const cellEl = document.createElement('div');
+                cellEl.className = 'bubble-cell';
+                cellEl.dataset.index = index;
+                
+                if (cell) {
+                    const bubble = document.createElement('div');
+                    bubble.className = `bubble bubble-${cell.color}`;
+                    if (cell.special) bubble.classList.add(`special-${cell.special}`);
+                    if (index === selectedCell) bubble.classList.add('selected');
+                    cellEl.appendChild(bubble);
+                }
+                
+                cellEl.addEventListener('click', () => onCellClick(index));
+                gridEl.appendChild(cellEl);
+            });
+        }
+        
+        function onCellClick(index) {
+            if (isProcessing || !grid[index]) return;
+            
+            if (selectedCell === null) {
+                selectedCell = index;
+                renderGrid();
+            } else if (selectedCell === index) {
+                selectedCell = null;
+                renderGrid();
+            } else if (isAdjacent(selectedCell, index)) {
+                trySwap(selectedCell, index);
+            } else {
+                selectedCell = index;
+                renderGrid();
             }
         }
         
-        // 播放音效 - 物理模拟真实泡泡声
-        function playPopSound(x = 0.5, y = 0.5) {
-            if (!state.soundEnabled || !audioCtx) return;
-            
-            const t = audioCtx.currentTime;
-            
-            // 主振荡器 - 爆破音
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            const filter = audioCtx.createBiquadFilter();
-            
-            osc.connect(filter);
-            filter.connect(gain);
-            gain.connect(audioCtx.destination);
-            
-            // 频率快速下降模拟空气释放
-            osc.frequency.setValueAtTime(800 + Math.random() * 200, t);
-            osc.frequency.exponentialRampToValueAtTime(100, t + 0.08);
-            
-            // 低通滤波让声音更闷更像泡泡
-            filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(3000, t);
-            filter.frequency.exponentialRampToValueAtTime(500, t + 0.1);
-            
-            // 音量包络
-            gain.gain.setValueAtTime(0, t);
-            gain.gain.linearRampToValueAtTime(0.4, t + 0.01);
-            gain.gain.exponentialRampToValueAtTime(0.01, t + 0.12);
-            
-            osc.start(t);
-            osc.stop(t + 0.15);
-            
-            // 立体声定位
-            const panner = audioCtx.createStereoPanner();
-            panner.pan.value = (x - 0.5) * 2;
-            gain.disconnect();
-            gain.connect(panner);
-            panner.connect(audioCtx.destination);
+        function isAdjacent(a, b) {
+            const ax = a % GRID_SIZE, ay = Math.floor(a / GRID_SIZE);
+            const bx = b % GRID_SIZE, by = Math.floor(b / GRID_SIZE);
+            return Math.abs(ax - bx) + Math.abs(ay - by) === 1;
         }
         
-        // 播放连击音效
-        function playComboSound(combo) {
-            if (!state.soundEnabled || !audioCtx) return;
+        async function trySwap(a, b) {
+            isProcessing = true;
+            selectedCell = null;
             
-            const t = audioCtx.currentTime;
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
+            // 交换
+            [grid[a], grid[b]] = [grid[b], grid[a]];
+            renderGrid();
             
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
+            const matches = findMatches();
             
-            // 连击数越高音调越高
-            const baseFreq = 400 + Math.min(combo * 50, 800);
-            osc.frequency.setValueAtTime(baseFreq, t);
-            osc.frequency.exponentialRampToValueAtTime(baseFreq * 2, t + 0.1);
-            
-            gain.gain.setValueAtTime(0.3, t);
-            gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
-            
-            osc.start(t);
-            osc.stop(t + 0.3);
+            if (matches.length === 0) {
+                // 没有匹配，交换回来
+                await sleep(200);
+                [grid[a], grid[b]] = [grid[b], grid[a]];
+                renderGrid();
+                isProcessing = false;
+            } else {
+                // 有匹配，执行消除
+                moves--;
+                updateUI();
+                await processMatches();
+                
+                if (moves <= 0) {
+                    checkGameEnd();
+                }
+            }
         }
         
-        // 创建粒子效果
-        function createParticles(x, y, color) {
-            const count = 6 + Math.floor(Math.random() * 4);
+        function findMatches() {
+            const matches = new Set();
             
-            for (let i = 0; i < count; i++) {
+            // 检查横向
+            for (let y = 0; y < GRID_SIZE; y++) {
+                for (let x = 0; x < GRID_SIZE - 2; x++) {
+                    const idx = y * GRID_SIZE + x;
+                    if (!grid[idx] || !grid[idx + 1] || !grid[idx + 2]) continue;
+                    
+                    const c1 = grid[idx].color;
+                    if (grid[idx + 1].color === c1 && grid[idx + 2].color === c1) {
+                        matches.add(idx);
+                        matches.add(idx + 1);
+                        matches.add(idx + 2);
+                    }
+                }
+            }
+            
+            // 检查纵向
+            for (let x = 0; x < GRID_SIZE; x++) {
+                for (let y = 0; y < GRID_SIZE - 2; y++) {
+                    const idx = y * GRID_SIZE + x;
+                    if (!grid[idx] || !grid[idx + GRID_SIZE] || !grid[idx + GRID_SIZE * 2]) continue;
+                    
+                    const c1 = grid[idx].color;
+                    if (grid[idx + GRID_SIZE].color === c1 && grid[idx + GRID_SIZE * 2].color === c1) {
+                        matches.add(idx);
+                        matches.add(idx + GRID_SIZE);
+                        matches.add(idx + GRID_SIZE * 2);
+                    }
+                }
+            }
+            
+            return Array.from(matches);
+        }
+        
+        async function processMatches() {
+            let combo = 0;
+            
+            while (true) {
+                const matches = findMatches();
+                if (matches.length === 0) break;
+                
+                combo++;
+                
+                // 更新分数
+                const points = matches.length * 10 * combo;
+                score += points;
+                
+                // 更新任务进度
+                matches.forEach(idx => {
+                    const color = grid[idx].color;
+                    if (mission[color] && missionProgress[color] < mission[color]) {
+                        missionProgress[color]++;
+                    }
+                });
+                
+                // 显示连击
+                if (combo > 1) showCombo(combo);
+                
+                // 消除动画
+                matches.forEach(idx => {
+                    const cell = document.querySelector(`[data-index="${idx}"] .bubble`);
+                    if (cell) {
+                        cell.classList.add('removing');
+                        createParticles(idx);
+                    }
+                });
+                
+                updateUI();
+                renderMission();
+                await sleep(300);
+                
+                // 清除并下落
+                matches.forEach(idx => grid[idx] = null);
+                applyGravity();
+                renderGrid();
+                
+                // 新泡泡动画
+                document.querySelectorAll('.bubble').forEach(b => b.classList.add('falling'));
+                await sleep(200);
+            }
+            
+            isProcessing = false;
+            checkGameEnd();
+        }
+        
+        function applyGravity() {
+            for (let x = 0; x < GRID_SIZE; x++) {
+                const column = [];
+                for (let y = GRID_SIZE - 1; y >= 0; y--) {
+                    const idx = y * GRID_SIZE + x;
+                    if (grid[idx]) column.push(grid[idx]);
+                }
+                
+                while (column.length < GRID_SIZE) {
+                    column.push(createRandomBubble());
+                }
+                
+                for (let y = GRID_SIZE - 1; y >= 0; y--) {
+                    const idx = y * GRID_SIZE + x;
+                    grid[idx] = column[GRID_SIZE - 1 - y];
+                }
+            }
+        }
+        
+        function createParticles(cellIndex) {
+            const cell = document.querySelector(`[data-index="${cellIndex}"]`);
+            if (!cell) return;
+            
+            const rect = cell.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const color = grid[cellIndex]?.color || 'white';
+            const colorMap = { red: '#ff6b6b', blue: '#4ecdc4', green: '#95e1d3', yellow: '#ffd93d', purple: '#a8e6cf' };
+            
+            for (let i = 0; i < 6; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
-                
-                const size = 3 + Math.random() * 5;
-                const angle = (Math.PI * 2 * i) / count + Math.random() * 0.5;
+                const size = 4 + Math.random() * 6;
+                const angle = (Math.PI * 2 * i) / 6;
                 const velocity = 30 + Math.random() * 50;
-                const tx = Math.cos(angle) * velocity;
-                const ty = Math.sin(angle) * velocity - 20;
                 
                 particle.style.cssText = `
                     width: ${size}px;
                     height: ${size}px;
-                    background: ${color};
-                    left: ${x}px;
-                    top: ${y}px;
-                    --tx: ${tx}px;
-                    --ty: ${ty}px;
-                    box-shadow: 0 0 ${size}px ${color};
+                    background: ${colorMap[color]};
+                    left: ${centerX}px;
+                    top: ${centerY}px;
+                    --tx: ${Math.cos(angle) * velocity}px;
+                    --ty: ${Math.sin(angle) * velocity}px;
                 `;
                 
                 document.body.appendChild(particle);
@@ -608,270 +765,117 @@
             }
         }
         
-        // 创建泡泡
-        function createBubble(index) {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'bubble-wrapper';
-            wrapper.dataset.index = index;
-            
-            const bubble = document.createElement('div');
-            bubble.className = 'bubble';
-            
-            // 8% 概率金色泡泡
-            if (Math.random() < 0.08) {
-                bubble.classList.add('golden');
-                wrapper.dataset.golden = 'true';
-            }
-            
-            const dent = document.createElement('div');
-            dent.className = 'bubble-dent';
-            
-            wrapper.appendChild(dent);
-            wrapper.appendChild(bubble);
-            
-            // 触摸/鼠标事件
-            let pressTimer;
-            let isPressing = false;
-            
-            const startPress = (e) => {
-                e.preventDefault();
-                if (bubble.classList.contains('popped')) return;
-                
-                initAudio();
-                isPressing = true;
-                bubble.classList.add('pressing');
-                
-                // 长按蓄力效果（可选）
-                pressTimer = setTimeout(() => {
-                    if (isPressing) {
-                        popBubble(wrapper, e);
-                    }
-                }, 150);
-            };
-            
-            const endPress = (e) => {
-                if (!isPressing) return;
-                isPressing = false;
-                clearTimeout(pressTimer);
-                bubble.classList.remove('pressing');
-                
-                if (!bubble.classList.contains('popped')) {
-                    popBubble(wrapper, e);
-                }
-            };
-            
-            bubble.addEventListener('mousedown', startPress);
-            bubble.addEventListener('touchstart', startPress, { passive: false });
-            bubble.addEventListener('mouseup', endPress);
-            bubble.addEventListener('touchend', endPress);
-            bubble.addEventListener('mouseleave', () => {
-                isPressing = false;
-                clearTimeout(pressTimer);
-                bubble.classList.remove('pressing');
-            });
-            
-            return wrapper;
-        }
-        
-        // 戳破泡泡
-        function popBubble(wrapper, e) {
-            const bubble = wrapper.querySelector('.bubble');
-            if (bubble.classList.contains('popped')) return;
-            
-            const rect = bubble.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            const x = centerX / window.innerWidth;
-            const y = centerY / window.innerHeight;
-            
-            // 更新连击
-            const now = Date.now();
-            if (now - state.lastPopTime < 600) {
-                state.combo++;
-            } else {
-                state.combo = 1;
-            }
-            state.lastPopTime = now;
-            
-            // 视觉更新
-            bubble.classList.add('popped');
-            
-            // 显示凹坑
-            setTimeout(() => {
-                wrapper.querySelector('.bubble-dent').classList.add('show');
-            }, 100);
-            
-            // 粒子效果
-            const theme = themes[state.currentTheme];
-            const isGolden = wrapper.dataset.golden === 'true';
-            const color = isGolden ? '#ffd700' : theme.primary;
-            createParticles(centerX, centerY, color);
-            
-            // 震动（如果支持）
-            if (navigator.vibrate) {
-                navigator.vibrate(isGolden ? [20, 30, 20] : 15);
-            }
-            
-            // 音效
-            playPopSound(x, y);
-            
-            // 统计数据
-            state.popCount++;
-            if (isGolden) {
-                state.coins += 10;
-                playComboSound(5);
-            }
-            
-            updateStats();
-            
-            // 连击显示
-            if (state.combo > 1 && state.combo % 5 === 0) {
-                showCombo(state.combo);
-                playComboSound(state.combo);
-            }
-            
-            // 检查全部戳完
-            checkComplete();
-        }
-        
-        // 显示连击
         function showCombo(count) {
-            comboText.textContent = count;
+            const comboText = document.getElementById('comboText');
+            comboText.textContent = `${count} 连击!`;
             comboText.classList.remove('show');
             void comboText.offsetWidth;
             comboText.classList.add('show');
-            
-            comboLabel.classList.remove('show');
-            void comboLabel.offsetWidth;
-            comboLabel.classList.add('show');
-            
-            // 连击数字动画
-            comboCountEl.style.animation = 'none';
-            void comboCountEl.offsetWidth;
-            comboCountEl.style.animation = 'comboPulse 0.3s ease-out';
         }
         
-        // 更新统计
-        function updateStats() {
-            popCountEl.textContent = state.popCount.toLocaleString();
-            comboCountEl.textContent = state.combo;
-            coinCountEl.textContent = state.coins.toLocaleString();
-        }
-        
-        // 检查完成
-        function checkComplete() {
-            const allPopped = Array.from(grid.children).every(w => {
-                return w.querySelector('.bubble').classList.contains('popped');
+        function checkGameEnd() {
+            const missionComplete = Object.entries(mission).every(([color, target]) => {
+                return (missionProgress[color] || 0) >= target;
             });
             
-            if (allPopped && !state.isAutoPopping) {
-                setTimeout(resetGrid, 400);
+            if (missionComplete) {
+                showModal(true);
+            } else if (moves <= 0) {
+                showModal(false);
             }
         }
         
-        // 重置网格
-        function resetGrid() {
-            grid.innerHTML = '';
-            for (let i = 0; i < 25; i++) {
-                grid.appendChild(createBubble(i));
+        function showModal(win) {
+            const modal = document.getElementById('modal');
+            const icon = document.getElementById('modalIcon');
+            const title = document.getElementById('modalTitle');
+            const scoreEl = document.getElementById('modalScore');
+            const stars = document.getElementById('modalStars');
+            const btn = document.getElementById('modalBtn');
+            
+            if (win) {
+                icon.textContent = '🎉';
+                title.textContent = '通关!';
+                title.className = 'modal-title win';
+                
+                // 计算星星
+                let starCount = 1;
+                if (moves >= 5) starCount = 2;
+                if (moves >= 10) starCount = 3;
+                stars.textContent = '⭐'.repeat(starCount);
+                
+                btn.textContent = '下一关 →';
+                btn.onclick = nextLevel;
+            } else {
+                icon.textContent = '😢';
+                title.textContent = '失败';
+                title.className = 'modal-title lose';
+                stars.textContent = '';
+                btn.textContent = '重试';
+                btn.onclick = restartLevel;
             }
-            state.combo = 0;
-            updateStats();
+            
+            scoreEl.textContent = `得分: ${score}`;
+            modal.classList.add('show');
         }
         
-        // 自动解压
-        function autoPop() {
-            if (state.isAutoPopping) return;
-            state.isAutoPopping = true;
-            
-            const wrappers = Array.from(grid.children);
-            const unpopped = wrappers.filter(w => {
-                return !w.querySelector('.bubble').classList.contains('popped');
-            });
-            
-            if (unpopped.length === 0) {
-                state.isAutoPopping = false;
-                return;
-            }
-            
-            let i = 0;
-            const interval = setInterval(() => {
-                if (i >= unpopped.length) {
-                    clearInterval(interval);
-                    state.isAutoPopping = false;
-                    return;
+        function nextLevel() {
+            document.getElementById('modal').classList.remove('show');
+            level++;
+            initLevel();
+        }
+        
+        function restartLevel() {
+            document.getElementById('modal').classList.remove('show');
+            initLevel();
+        }
+        
+        function showHint() {
+            // 找到可能的移动
+            for (let i = 0; i < CELL_COUNT; i++) {
+                const neighbors = getNeighbors(i);
+                for (let neighbor of neighbors) {
+                    [grid[i], grid[neighbor]] = [grid[neighbor], grid[i]];
+                    const matches = findMatches();
+                    [grid[i], grid[neighbor]] = [grid[neighbor], grid[i]];
+                    
+                    if (matches.length > 0) {
+                        const cell = document.querySelector(`[data-index="${i}"] .bubble`);
+                        if (cell) {
+                            cell.classList.add('hint');
+                            setTimeout(() => cell.classList.remove('hint'), 2000);
+                        }
+                        return;
+                    }
                 }
-                
-                const wrapper = unpopped[i];
-                const rect = wrapper.getBoundingClientRect();
-                popBubble(wrapper, { clientX: rect.left, clientY: rect.top });
-                i++;
-            }, 80);
-        }
-        
-        // 切换主题
-        function toggleTheme() {
-            themeSelector.classList.toggle('show');
-        }
-        
-        // 主题选择
-        document.querySelectorAll('.theme-dot').forEach(dot => {
-            dot.addEventListener('click', () => {
-                const themeIndex = parseInt(dot.dataset.theme);
-                state.currentTheme = themeIndex;
-                
-                document.querySelectorAll('.theme-dot').forEach(d => d.classList.remove('active'));
-                dot.classList.add('active');
-                
-                applyTheme(themes[themeIndex]);
-                themeSelector.classList.remove('show');
-            });
-        });
-        
-        function applyTheme(theme) {
-            document.querySelectorAll('.bubble:not(.popped):not(.golden)').forEach(bubble => {
-                bubble.style.background = `
-                    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.4) 20%, transparent 40%),
-                    radial-gradient(circle at 70% 70%, rgba(0,0,0,0.1) 0%, transparent 50%),
-                    linear-gradient(135deg, ${theme.primary}80 0%, ${theme.secondary}90 100%)
-                `;
-                bubble.style.boxShadow = `
-                    inset -5px -5px 15px rgba(0,0,0,0.3),
-                    inset 5px 5px 15px rgba(255,255,255,0.4),
-                    0 8px 25px ${theme.primary}40,
-                    0 0 0 1px rgba(255,255,255,0.1)
-                `;
-            });
-        }
-        
-        // 音效开关
-        soundBtn.addEventListener('click', () => {
-            state.soundEnabled = !state.soundEnabled;
-            soundBtn.textContent = state.soundEnabled ? '🔊' : '🔇';
-            if (state.soundEnabled) initAudio();
-        });
-        
-        // 点击空白关闭主题选择器
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.theme-selector') && !e.target.closest('.control-btn')) {
-                themeSelector.classList.remove('show');
             }
-        });
+        }
+        
+        function getNeighbors(index) {
+            const neighbors = [];
+            const x = index % GRID_SIZE;
+            const y = Math.floor(index / GRID_SIZE);
+            
+            if (x > 0) neighbors.push(index - 1);
+            if (x < GRID_SIZE - 1) neighbors.push(index + 1);
+            if (y > 0) neighbors.push(index - GRID_SIZE);
+            if (y < GRID_SIZE - 1) neighbors.push(index + GRID_SIZE);
+            
+            return neighbors;
+        }
+        
+        function updateUI() {
+            document.getElementById('levelNum').textContent = level;
+            document.getElementById('score').textContent = score.toLocaleString();
+            document.getElementById('moves').textContent = moves;
+        }
+        
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
         
         // 初始化
-        resetGrid();
-        
-        // 首次点击初始化音频
-        document.addEventListener('click', initAudio, { once: true });
-        document.addEventListener('touchstart', initAudio, { once: true });
-        
-        // 防止双击缩放
-        document.addEventListener('touchstart', (e) => {
-            if (e.touches.length > 1) e.preventDefault();
-        }, { passive: false });
-        
-        // 防止长按菜单
-        document.addEventListener('contextmenu', e => e.preventDefault());
+        initLevel();
     </script>
 </body>
 </html>
