@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>无限泡泡纸 - Bubble Pop</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #1a1a2e;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            overflow-x: hidden;
+        }
+        .header {
+            padding: 20px;
+            text-align: center;
+            color: #fff;
+        }
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .stats {
+            display: flex;
+            gap: 30px;
+            color: #888;
+            font-size: 14px;
+        }
+        .stats span {
+            color: #ffd700;
+        }
+        .bubble-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+        }
+        .bubble {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.1s;
+            box-shadow: 
+                inset -3px -3px 7px rgba(0,0,0,0.3),
+                inset 3px 3px 7px rgba(255,255,255,0.3),
+                0 4px 8px rgba(0,0,0,0.3);
+        }
+        .bubble::before {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 15%;
+            width: 25%;
+            height: 25%;
+            background: rgba(255,255,255,0.6);
+            border-radius: 50%;
+        }
+        .bubble:active {
+            transform: scale(0.95);
+        }
+        .bubble.popped {
+            background: linear-gradient(135deg, #2d2d44 0%, #1a1a2e 100%);
+            box-shadow: 
+                inset 2px 2px 5px rgba(0,0,0,0.5),
+                inset -2px -2px 5px rgba(255,255,255,0.05);
+        }
+        .bubble.popped::before {
+            display: none;
+        }
+        .bubble.golden {
+            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+            animation: glow 1.5s ease-in-out infinite;
+        }
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px #ffd700; }
+            50% { box-shadow: 0 0 25px #ffd700, 0 0 40px #ff8c00; }
+        }
+        .controls {
+            padding: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .sound-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .combo {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            font-weight: bold;
+            color: #ffd700;
+            pointer-events: none;
+            opacity: 0;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        .combo.show {
+            animation: comboAnim 0.8s ease-out forwards;
+        }
+        @keyframes comboAnim {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            50% { opacity: 1; transform: translate(-50%, -60%) scale(1.2); }
+            100% { opacity: 0; transform: translate(-50%, -80%) scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <button class="sound-toggle" id="soundToggle">🔊</button>
+    
+    <div class="header">
+        <h1>无限泡泡纸</h1>
+        <div class="stats">
+            <div>已戳破: <span id="popCount">0</span></div>
+            <div>连击: <span id="comboCount">0</span></div>
+            <div>金币: <span id="coinCount">0</span></div>
+        </div>
+    </div>
+
+    <div class="bubble-grid" id="bubbleGrid"></div>
+
+    <div class="controls">
+        <button class="btn" onclick="resetGrid()">重置泡泡</button>
+        <button class="btn" onclick="autoPop()">自动解压</button>
+        <button class="btn" onclick="changeColor()">换色主题</button>
+    </div>
+
+    <div class="combo" id="comboText"></div>
+
+    <script>
+        const grid = document.getElementById('bubbleGrid');
+        const popCountEl = document.getElementById('popCount');
+        const comboCountEl = document.getElementById('comboCount');
+        const coinCountEl = document.getElementById('coinCount');
+        const comboText = document.getElementById('comboText');
+        const soundToggle = document.getElementById('soundToggle');
+
+        let popCount = 0;
+        let combo = 0;
+        let coins = 0;
+        let soundEnabled = true;
+        let lastPopTime = 0;
+        let colorTheme = 0;
+
+        const themes = [
+            { bg: ['#667eea', '#764ba2'], name: '梦幻紫' },
+            { bg: ['#f093fb', '#f5576c'], name: '樱花粉' },
+            { bg: ['#4facfe', '#00f2fe'], name: '天空蓝' },
+            { bg: ['#43e97b', '#38f9d7'], name: '薄荷绿' },
+            { bg: ['#fa709a', '#fee140'], name: '夕阳橙' }
+        ];
+
+        // 创建音效
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playPopSound() {
+            if (!soundEnabled) return;
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            oscillator.frequency.setValueAtTime(400 + Math.random() * 200, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.1);
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+
+        function createBubble(index) {
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            bubble.dataset.index = index;
+            
+            // 10% 概率生成金色泡泡
+            if (Math.random() < 0.1) {
+                bubble.classList.add('golden');
+            }
+            
+            bubble.addEventListener('click', () => popBubble(bubble));
+            bubble.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                popBubble(bubble);
+            });
+            return bubble;
+        }
+
+        function popBubble(bubble) {
+            if (bubble.classList.contains('popped')) return;
+            
+            const now = Date.now();
+            if (now - lastPopTime < 500) {
+                combo++;
+            } else {
+                combo = 1;
+            }
+            lastPopTime = now;
+
+            bubble.classList.add('popped');
+            bubble.classList.remove('golden');
+            
+            popCount++;
+            if (combo > 1) {
+                showCombo(combo);
+            }
+            
+            playPopSound();
+            updateStats();
+
+            // 金色泡泡奖励
+            if (Math.random() < 0.1) {
+                coins += 5;
+                updateStats();
+            }
+
+            // 检查是否需要生成新行
+            checkRegenerate();
+        }
+
+        function showCombo(count) {
+            comboText.textContent = `${count} 连击!`;
+            comboText.classList.remove('show');
+            void comboText.offsetWidth;
+            comboText.classList.add('show');
+        }
+
+        function updateStats() {
+            popCountEl.textContent = popCount;
+            comboCountEl.textContent = combo;
+            coinCountEl.textContent = coins;
+        }
+
+        function checkRegenerate() {
+            const allPopped = Array.from(grid.children).every(b => b.classList.contains('popped'));
+            if (allPopped) {
+                setTimeout(resetGrid, 300);
+            }
+        }
+
+        function resetGrid() {
+            grid.innerHTML = '';
+            for (let i = 0; i < 36; i++) {
+                grid.appendChild(createBubble(i));
+            }
+            combo = 0;
+            updateStats();
+        }
+
+        function autoPop() {
+            const bubbles = Array.from(grid.children).filter(b => !b.classList.contains('popped'));
+            if (bubbles.length === 0) return;
+            
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i >= bubbles.length) {
+                    clearInterval(interval);
+                    return;
+                }
+                popBubble(bubbles[i]);
+                i++;
+            }, 50);
+        }
+
+        function changeColor() {
+            colorTheme = (colorTheme + 1) % themes.length;
+            const theme = themes[colorTheme];
+            document.querySelectorAll('.bubble:not(.popped)').forEach(bubble => {
+                bubble.style.background = `linear-gradient(135deg, ${theme.bg[0]} 0%, ${theme.bg[1]} 100%)`;
+            });
+        }
+
+        soundToggle.addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
+        });
+
+        // 初始化
+        resetGrid();
+
+        // 防止双击缩放
+        document.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+    </script>
+</body>
+</html>

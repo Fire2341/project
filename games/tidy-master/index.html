@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>收纳大师 - Tidy Master</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            overflow-x: hidden;
+        }
+        .game-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            color: #fff;
+            padding: 20px 0;
+        }
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        .level-info {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        .level-info span {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+        .scene-container {
+            background: #fff;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            min-height: 400px;
+            position: relative;
+        }
+        .scene-title {
+            text-align: center;
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed #eee;
+        }
+        .storage-area {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            border-radius: 15px;
+            padding: 20px;
+            min-height: 300px;
+            position: relative;
+            border: 3px dashed #ccc;
+        }
+        .storage-area.completed {
+            border-color: #4caf50;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        }
+        .item {
+            position: absolute;
+            cursor: grab;
+            user-select: none;
+            transition: transform 0.2s;
+            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.2));
+        }
+        .item:active {
+            cursor: grabbing;
+            transform: scale(1.1);
+            z-index: 1000;
+        }
+        .item.dragging {
+            opacity: 0.8;
+            z-index: 1000;
+        }
+        .item-placed {
+            animation: placeItem 0.3s ease-out;
+        }
+        @keyframes placeItem {
+            0% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        /* 物品样式 */
+        .item-book {
+            width: 40px;
+            height: 55px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+            border-radius: 3px;
+            border-left: 5px solid rgba(0,0,0,0.2);
+        }
+        .item-bottle {
+            width: 30px;
+            height: 60px;
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a8a0 100%);
+            border-radius: 5px 5px 15px 15px;
+        }
+        .item-box {
+            width: 50px;
+            height: 40px;
+            background: linear-gradient(135deg, #ffe66d 0%, #f4d03f 100%);
+            border-radius: 5px;
+        }
+        .item-phone {
+            width: 35px;
+            height: 60px;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            border-radius: 8px;
+            border: 3px solid #555;
+        }
+        .item-cosmetic {
+            width: 25px;
+            height: 50px;
+            background: linear-gradient(135deg, #ff9ff3 0%, #f368e0 100%);
+            border-radius: 3px 3px 12px 12px;
+        }
+        .slot {
+            position: absolute;
+            border: 2px dashed rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            background: rgba(102, 126, 234, 0.05);
+        }
+        .slot.highlight {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.15);
+        }
+        .slot.filled {
+            border-color: transparent;
+            background: transparent;
+        }
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+        .btn-secondary {
+            background: #fff;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        .btn-secondary:hover {
+            background: #f8f9ff;
+        }
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+            z-index: 1000;
+        }
+        .success-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        .success-modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            animation: modalPop 0.4s ease-out;
+        }
+        @keyframes modalPop {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .modal-content h2 {
+            color: #4caf50;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+        .modal-content p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        .star-rating {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+        .hint-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+    
+    <div class="game-container">
+        <div class="header">
+            <h1>🎯 收纳大师</h1>
+            <div class="level-info">
+                <span>关卡: <strong id="levelNum">1</strong></span>
+                <span>物品: <strong id="itemCount">0/0</strong></span>
+                <span>时间: <strong id="timer">00:00</strong></span>
+            </div>
+        </div>
+
+        <div class="scene-container">
+            <div class="scene-title" id="sceneTitle">混乱的书桌</div>
+            <div class="storage-area" id="storageArea">
+                <!-- 收纳槽位 -->
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-secondary" onclick="resetLevel()">重置</button>
+            <button class="btn btn-primary" onclick="nextLevel()">下一关 →</button>
+        </div>
+    </div>
+
+    <button class="hint-btn" onclick="showHint()" title="提示">💡</button>
+
+    <div class="success-modal" id="successModal">
+        <div class="modal-content">
+            <h2>🎉 收纳完成!</h2>
+            <div class="star-rating">⭐⭐⭐</div>
+            <p>太棒了！所有物品都归位了</p>
+            <button class="btn btn-primary" onclick="closeModal()">继续</button>
+        </div>
+    </div>
+
+    <script>
+        const scenes = [
+            {
+                title: '📚 混乱的书桌',
+                items: [
+                    { type: 'book', count: 3 },
+                    { type: 'phone', count: 1 },
+                    { type: 'cosmetic', count: 2 }
+                ],
+                layout: 'desk'
+            },
+            {
+                title: '🧊 杂乱的冰箱',
+                items: [
+                    { type: 'bottle', count: 4 },
+                    { type: 'box', count: 3 }
+                ],
+                layout: 'fridge'
+            },
+            {
+                title: '💄 化妆台整理',
+                items: [
+                    { type: 'cosmetic', count: 5 },
+                    { type: 'phone', count: 1 },
+                    { type: 'book', count: 1 }
+                ],
+                layout: 'dresser'
+            },
+            {
+                title: '📦 储物间收纳',
+                items: [
+                    { type: 'box', count: 6 },
+                    { type: 'book', count: 2 },
+                    { type: 'bottle', count: 2 }
+                ],
+                layout: 'storage'
+            }
+        ];
+
+        let currentLevel = 0;
+        let placedItems = 0;
+        let totalItems = 0;
+        let startTime = Date.now();
+        let timerInterval;
+        let draggedItem = null;
+        let slots = [];
+
+        function initLevel() {
+            const scene = scenes[currentLevel];
+            document.getElementById('sceneTitle').textContent = scene.title;
+            document.getElementById('levelNum').textContent = currentLevel + 1;
+            
+            const area = document.getElementById('storageArea');
+            area.innerHTML = '';
+            area.classList.remove('completed');
+            
+            // 创建收纳槽位
+            slots = createSlots(scene.layout, area);
+            
+            // 创建物品
+            let itemId = 0;
+            scene.items.forEach(itemType => {
+                for (let i = 0; i < itemType.count; i++) {
+                    createItem(itemType.type, itemId++, area);
+                }
+            });
+            
+            totalItems = itemId;
+            placedItems = 0;
+            updateProgress();
+            startTimer();
+        }
+
+        function createSlots(layout, container) {
+            const slotPositions = {
+                desk: [
+                    { x: 10, y: 10, w: 80, h: 100 },
+                    { x: 100, y: 10, w: 80, h: 100 },
+                    { x: 190, y: 10, w: 80, h: 100 },
+                    { x: 10, y: 120, w: 100, h: 80 },
+                    { x: 120, y: 120, w: 100, h: 80 },
+                    { x: 230, y: 120, w: 100, h: 80 }
+                ],
+                fridge: [
+                    { x: 10, y: 10, w: 100, h: 120 },
+                    { x: 120, y: 10, w: 100, h: 120 },
+                    { x: 230, y: 10, w: 100, h: 120 },
+                    { x: 10, y: 140, w: 100, h: 120 },
+                    { x: 120, y: 140, w: 100, h: 120 },
+                    { x: 230, y: 140, w: 100, h: 120 }
+                ],
+                dresser: [
+                    { x: 10, y: 10, w: 60, h: 80 },
+                    { x: 80, y: 10, w: 60, h: 80 },
+                    { x: 150, y: 10, w: 60, h: 80 },
+                    { x: 220, y: 10, w: 60, h: 80 },
+                    { x: 290, y: 10, w: 60, h: 80 },
+                    { x: 80, y: 100, w: 80, h: 100 },
+                    { x: 170, y: 100, w: 80, h: 100 }
+                ],
+                storage: [
+                    { x: 10, y: 10, w: 90, h: 90 },
+                    { x: 110, y: 10, w: 90, h: 90 },
+                    { x: 210, y: 10, w: 90, h: 90 },
+                    { x: 10, y: 110, w: 90, h: 90 },
+                    { x: 110, y: 110, w: 90, h: 90 },
+                    { x: 210, y: 110, w: 90, h: 90 },
+                    { x: 10, y: 210, w: 90, h: 90 },
+                    { x: 110, y: 210, w: 90, h: 90 },
+                    { x: 210, y: 210, w: 90, h: 90 }
+                ]
+            };
+
+            const positions = slotPositions[layout] || slotPositions.desk;
+            return positions.map((pos, i) => {
+                const slot = document.createElement('div');
+                slot.className = 'slot';
+                slot.style.left = pos.x + 'px';
+                slot.style.top = pos.y + 'px';
+                slot.style.width = pos.w + 'px';
+                slot.style.height = pos.h + 'px';
+                slot.dataset.index = i;
+                container.appendChild(slot);
+                return slot;
+            });
+        }
+
+        function createItem(type, id, container) {
+            const item = document.createElement('div');
+            item.className = `item item-${type}`;
+            item.dataset.id = id;
+            item.dataset.type = type;
+            
+            // 随机初始位置（在收纳区外）
+            const area = container.getBoundingClientRect();
+            const x = 20 + Math.random() * (area.width - 100);
+            const y = 20 + Math.random() * (area.height - 100);
+            item.style.left = x + 'px';
+            item.style.top = y + 'px';
+            
+            // 拖拽事件
+            item.addEventListener('mousedown', startDrag);
+            item.addEventListener('touchstart', startDrag, { passive: false });
+            
+            container.appendChild(item);
+        }
+
+        function startDrag(e) {
+            e.preventDefault();
+            draggedItem = e.target;
+            draggedItem.classList.add('dragging');
+            
+            const touch = e.touches ? e.touches[0] : e;
+            const rect = draggedItem.getBoundingClientRect();
+            const offsetX = touch.clientX - rect.left;
+            const offsetY = touch.clientY - rect.top;
+            
+            function move(e) {
+                const touch = e.touches ? e.touches[0] : e;
+                const container = document.getElementById('storageArea').getBoundingClientRect();
+                
+                let x = touch.clientX - container.left - offsetX;
+                let y = touch.clientY - container.top - offsetY;
+                
+                draggedItem.style.left = x + 'px';
+                draggedItem.style.top = y + 'px';
+                
+                // 高亮可能的槽位
+                highlightNearestSlot(draggedItem);
+            }
+            
+            function end(e) {
+                document.removeEventListener('mousemove', move);
+                document.removeEventListener('mouseup', end);
+                document.removeEventListener('touchmove', move);
+                document.removeEventListener('touchend', end);
+                
+                draggedItem.classList.remove('dragging');
+                checkPlacement(draggedItem);
+                draggedItem = null;
+                clearSlotHighlights();
+            }
+            
+            document.addEventListener('mousemove', move);
+            document.addEventListener('mouseup', end);
+            document.addEventListener('touchmove', move, { passive: false });
+            document.addEventListener('touchend', end);
+        }
+
+        function highlightNearestSlot(item) {
+            clearSlotHighlights();
+            const itemRect = item.getBoundingClientRect();
+            const itemCenter = {
+                x: itemRect.left + itemRect.width / 2,
+                y: itemRect.top + itemRect.height / 2
+            };
+            
+            let nearest = null;
+            let minDist = Infinity;
+            
+            slots.forEach(slot => {
+                if (slot.classList.contains('filled')) return;
+                
+                const rect = slot.getBoundingClientRect();
+                const center = {
+                    x: rect.left + rect.width / 2,
+                    y: rect.top + rect.height / 2
+                };
+                const dist = Math.hypot(itemCenter.x - center.x, itemCenter.y - center.y);
+                
+                if (dist < minDist && dist < 100) {
+                    minDist = dist;
+                    nearest = slot;
+                }
+            });
+            
+            if (nearest) nearest.classList.add('highlight');
+        }
+
+        function clearSlotHighlights() {
+            slots.forEach(slot => slot.classList.remove('highlight'));
+        }
+
+        function checkPlacement(item) {
+            const itemRect = item.getBoundingClientRect();
+            const itemCenter = {
+                x: itemRect.left + itemRect.width / 2,
+                y: itemRect.top + itemRect.height / 2
+            };
+            
+            for (let slot of slots) {
+                if (slot.classList.contains('filled')) continue;
+                
+                const rect = slot.getBoundingClientRect();
+                if (itemCenter.x >= rect.left && itemCenter.x <= rect.right &&
+                    itemCenter.y >= rect.top && itemCenter.y <= rect.bottom) {
+                    
+                    // 放置到槽位中心
+                    const container = document.getElementById('storageArea').getBoundingClientRect();
+                    item.style.left = (rect.left - container.left + rect.width / 2 - itemRect.width / 2) + 'px';
+                    item.style.top = (rect.top - container.top + rect.height / 2 - itemRect.height / 2) + 'px';
+                    item.classList.add('item-placed');
+                    
+                    slot.classList.add('filled');
+                    item.dataset.placed = 'true';
+                    placedItems++;
+                    updateProgress();
+                    
+                    if (placedItems === totalItems) {
+                        levelComplete();
+                    }
+                    return;
+                }
+            }
+        }
+
+        function updateProgress() {
+            document.getElementById('itemCount').textContent = `${placedItems}/${totalItems}`;
+            const progress = (placedItems / totalItems) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
+                const secs = String(elapsed % 60).padStart(2, '0');
+                document.getElementById('timer').textContent = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function levelComplete() {
+            clearInterval(timerInterval);
+            document.getElementById('storageArea').classList.add('completed');
+            setTimeout(() => {
+                document.getElementById('successModal').classList.add('show');
+            }, 500);
+        }
+
+        function closeModal() {
+            document.getElementById('successModal').classList.remove('show');
+            nextLevel();
+        }
+
+        function nextLevel() {
+            currentLevel = (currentLevel + 1) % scenes.length;
+            initLevel();
+        }
+
+        function resetLevel() {
+            initLevel();
+        }
+
+        function showHint() {
+            // 显示第一个未放置物品的提示
+            const items = document.querySelectorAll('.item:not([data-placed="true"])');
+            if (items.length > 0) {
+                const item = items[0];
+                item.style.animation = 'pulse 1s ease-in-out 3';
+                setTimeout(() => item.style.animation = '', 3000);
+            }
+        }
+
+        // 添加脉冲动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0%, 100% { transform: scale(1); box-shadow: 0 0 0 rgba(102, 126, 234, 0); }
+                50% { transform: scale(1.1); box-shadow: 0 0 20px rgba(102, 126, 234, 0.6); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 初始化
+        initLevel();
+    </script>
+</body>
+</html>
