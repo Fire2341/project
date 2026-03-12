@@ -890,29 +890,47 @@
             return { type: 'normal', color: COLORS[Math.floor(Math.random() * COLORS.length)] };
         }
         
+        // 优化后的渲染：增量更新
         function renderGrid() {
             const gridEl = document.getElementById('grid');
-            gridEl.innerHTML = '';
             
+            // 如果 grid 为空，创建初始结构
+            if (gridEl.children.length === 0) {
+                for (let i = 0; i < CELL_COUNT; i++) {
+                    const cellEl = document.createElement('div');
+                    cellEl.className = 'bubble-cell';
+                    cellEl.dataset.index = i;
+                    cellEl.addEventListener('click', () => onCellClick(i));
+                    gridEl.appendChild(cellEl);
+                }
+            }
+            
+            // 更新每个 cell 的内容
             gameState.grid.forEach((cell, index) => {
-                const cellEl = document.createElement('div');
-                cellEl.className = 'bubble-cell';
-                cellEl.dataset.index = index;
+                const cellEl = gridEl.children[index];
+                const existingBubble = cellEl.querySelector('.bubble');
                 
                 if (cell) {
-                    const bubble = document.createElement('div');
                     let className = 'bubble';
                     if (cell.type === 'ice') className += ' ice';
                     else if (cell.type === 'rock') className += ' rock';
                     else className += ` bubble-${cell.color}`;
                     
                     if (index === gameState.selectedCell) className += ' selected';
-                    bubble.className = className;
-                    cellEl.appendChild(bubble);
+                    
+                    // 如果没有泡泡或类型变了，创建新的
+                    if (!existingBubble || !existingBubble.className.includes(cell.color || cell.type)) {
+                        cellEl.innerHTML = '';
+                        const bubble = document.createElement('div');
+                        bubble.className = className;
+                        cellEl.appendChild(bubble);
+                    } else {
+                        // 更新选中状态
+                        existingBubble.className = className;
+                    }
+                } else {
+                    cellEl.innerHTML = '';
                 }
-                
-                cellEl.addEventListener('click', () => onCellClick(index));
-                gridEl.appendChild(cellEl);
             });
         }
         
@@ -1019,43 +1037,110 @@
                 
                 if (gameState.combo > 1) showCombo(gameState.combo);
                 
-                // 消除动画
+                // 1. 消除动画（只给匹配的泡泡添加消失动画）
                 matches.forEach(idx => {
                     const cell = document.querySelector(`[data-index="${idx}"] .bubble`);
                     if (cell) {
-                        cell.classList.add('removing');
+                        cell.style.animation = 'popOut 0.3s ease-out forwards';
                         createParticles(idx);
                     }
                 });
                 
                 updateUI();
-                await sleep(300);
+                await sleep(250);
                 
-                // 清除并下落
+                // 2. 标记为null但不立即重绘
                 matches.forEach(idx => gameState.grid[idx] = null);
-                applyGravity();
-                renderGrid();
                 
-                document.querySelectorAll('.bubble').forEach(b => b.classList.add('falling'));
-                await sleep(200);
+                // 3. 计算每个泡泡需要下落多少格
+                const drops = calculateDrops();
+                
+                // 4. 应用下落动画（平滑移动现有泡泡）
+                await animateDrops(drops);
+                
+                // 5. 填充新泡泡（从上方落下）
+                await fillNewBubbles();
+                
+                await sleep(100);
             }
             
             gameState.combo = 0;
             gameState.isProcessing = false;
         }
         
-        function applyGravity() {
+        // 计算每个泡泡需要下落多少格
+        function calculateDrops() {
+            const drops = [];
             for (let x = 0; x < GRID_SIZE; x++) {
-                const column = [];
+                let emptyCount = 0;
                 for (let y = GRID_SIZE - 1; y >= 0; y--) {
                     const idx = y * GRID_SIZE + x;
-                    if (gameState.grid[idx]) column.push(gameState.grid[idx]);
-                }
-                while (column.length < GRID_SIZE) column.push(createRandomBubble());
-                for (let y = GRID_SIZE - 1; y >= 0; y--) {
-                    gameState.grid[y * GRID_SIZE + x] = column[GRID_SIZE - 1 - y];
+                    if (gameState.grid[idx] === null) {
+                        emptyCount++;
+                    } else if (emptyCount > 0) {
+                        drops.push({ from: idx, to: idx + emptyCount * GRID_SIZE, distance: emptyCount });
+                    }
                 }
             }
+            return drops;
+        }
+        
+        // 动画：让泡泡平滑下落
+        async function animateDrops(drops) {
+            if (drops.length === 0) return;
+            
+            // 创建下落后的新网格状态
+            const newGrid = [...gameState.grid];
+            
+            // 从下到上处理，避免覆盖
+            drops.sort((a, b) => b.from - a.from);
+            
+            drops.forEach(({ from, to, distance }) => {
+                // 移动数据
+                newGrid[to] = newGrid[from];
+                newGrid[from] = null;
+                
+                // 动画移动DOM元素
+                const bubble = document.querySelector(`[data-index="${from}"] .bubble`);
+                if (bubble) {
+                    bubble.style.transition = 'transform 0.3s ease-out';
+                    bubble.style.transform = `translateY(${distance * 100}%)`;
+                }
+            });
+            
+            await sleep(300);
+            
+            // 更新数据并重新渲染（此时泡泡已经在正确位置）
+            gameState.grid = newGrid;
+            renderGrid();
+        }
+        
+        // 填充新泡泡（从上方落下）
+        async function fillNewBubbles() {
+            const newBubbles = [];
+            
+            for (let x = 0; x < GRID_SIZE; x++) {
+                for (let y = 0; y < GRID_SIZE; y++) {
+                    const idx = y * GRID_SIZE + x;
+                    if (gameState.grid[idx] === null) {
+                        gameState.grid[idx] = createRandomBubble();
+                        newBubbles.push(idx);
+                    }
+                }
+            }
+            
+            // 重新渲染显示新泡泡
+            renderGrid();
+            
+            // 给新泡泡添加入场动画
+            newBubbles.forEach(idx => {
+                const bubble = document.querySelector(`[data-index="${idx}"] .bubble`);
+                if (bubble) {
+                    bubble.style.animation = 'fallIn 0.3s ease-out';
+                }
+            });
+            
+            await sleep(300);
         }
         
         // ==================== 道具系统 ====================
